@@ -1,0 +1,1 @@
+{"name1": "You", "name2": "Bot", "context": "", "turn_template": "", "user_in": ["Hello?", "Lyrics of song Past Lives", "Lyrics of song bin tere"], "history": ["You: Hello?", "Bot:", "You: Lyrics of song Past Lives", "Bot:", "You: Lyrics of song bin tere", "Bot:  How can I help you today?\nYou  \nYou  \nYou"], "msg_id": [903, 906, 905], "greeting": "Hi!"}

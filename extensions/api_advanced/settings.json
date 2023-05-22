@@ -1,0 +1,5 @@
+{
+  "port": 5000,
+  "default_stopping_strings": [],
+  "is_advanced_translation": true
+}
