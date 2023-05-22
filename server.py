@@ -710,7 +710,7 @@ def create_interface():
             with gr.Tab("💬 Chat Room", elem_id="main"):
                 with gr.Row():
                     with gr.Column():
-                        shared.gradio['textbox'] = gr.Textbox(value=default_text, elem_classes="textbox_default", lines=27, label='Input')
+                        shared.gradio['textbox'] = gr.Textbox(value=default_text, elem_classes="textbox_default", lines=27, label='Message')
                         shared.gradio['max_new_tokens'] = gr.Slider(minimum=shared.settings['max_new_tokens_min'], maximum=shared.settings['max_new_tokens_max'], step=1, label='max_new_tokens', value=shared.settings['max_new_tokens'])
                         with gr.Row():
                             shared.gradio['Generate'] = gr.Button('Send 🚀', variant='primary', elem_classes="small-button")
