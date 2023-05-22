@@ -525,7 +525,7 @@ def create_interface():
         default_text = load_prompt(shared.settings['prompts'][next((k for k in shared.settings['prompts'] if re.match(k.lower(), shared.lora_names[0].lower())), 'default')])
     else:
         default_text = load_prompt(shared.settings['prompts'][next((k for k in shared.settings['prompts'] if re.match(k.lower(), shared.model_name.lower())), 'default')])
-    title = 'Text generation web UI'
+    title = 'Project Kai'
 
     # Authentication variables
     auth = None
@@ -560,34 +560,34 @@ def create_interface():
             shared.gradio['Chat input'] = gr.State()
             shared.gradio['dummy'] = gr.State()
 
-            with gr.Tab('Text generation', elem_id='main'):
+            with gr.Tab('💬 Chat Room', elem_id='main'):
                 shared.gradio['display'] = gr.HTML(value=chat_html_wrapper(shared.history['visible'], shared.settings['name1'], shared.settings['name2'], 'chat', 'cai-chat'))
                 shared.gradio['textbox'] = gr.Textbox(label='Input')
                 with gr.Row():
-                    shared.gradio['Stop'] = gr.Button('Stop', elem_id='stop')
-                    shared.gradio['Generate'] = gr.Button('Generate', elem_id='Generate', variant='primary')
-                    shared.gradio['Continue'] = gr.Button('Continue')
+                    shared.gradio['Stop'] = gr.Button('Stop 🛑', elem_id='stop')
+                    shared.gradio['Generate'] = gr.Button('Send 🚀', elem_id='Generate', variant='primary')
+                    shared.gradio['Continue'] = gr.Button('Continue ▶️')
 
                 with gr.Row():
-                    shared.gradio['Copy last reply'] = gr.Button('Copy last reply')
-                    shared.gradio['Regenerate'] = gr.Button('Regenerate')
-                    shared.gradio['Replace last reply'] = gr.Button('Replace last reply')
+                    shared.gradio['Copy last reply'] = gr.Button('Copy reply 📋')
+                    shared.gradio['Regenerate'] = gr.Button('🔄 Regenerate')
+                    #shared.gradio['Replace last reply'] = gr.Button('Replace last reply')
 
                 with gr.Row():
-                    shared.gradio['Impersonate'] = gr.Button('Impersonate')
-                    shared.gradio['Send dummy message'] = gr.Button('Send dummy message')
-                    shared.gradio['Send dummy reply'] = gr.Button('Send dummy reply')
+                    shared.gradio['Impersonate'] = gr.Button('Impersonate 👤')
+                    #shared.gradio['Send dummy message'] = gr.Button('Send dummy message')
+                    #shared.gradio['Send dummy reply'] = gr.Button('Send dummy reply')
 
                 with gr.Row():
-                    shared.gradio['Remove last'] = gr.Button('Remove last')
-                    shared.gradio['Clear history'] = gr.Button('Clear history')
-                    shared.gradio['Clear history-confirm'] = gr.Button('Confirm', variant='stop', visible=False)
-                    shared.gradio['Clear history-cancel'] = gr.Button('Cancel', visible=False)
+                    #shared.gradio['Remove last'] = gr.Button('Remove last')
+                    shared.gradio['Clear history'] = gr.Button('Clear History 🗑️')
+                    shared.gradio['Clear history-confirm'] = gr.Button('Confirm ✅', variant='stop', visible=False)
+                    shared.gradio['Clear history-cancel'] = gr.Button('Cancel ❌', visible=False)
 
-                shared.gradio['mode'] = gr.Radio(choices=['chat', 'chat-instruct', 'instruct'], value=shared.settings['mode'] if shared.settings['mode'] in ['chat', 'instruct', 'chat-instruct'] else 'chat', label='Mode', info='Defines how the chat prompt is generated. In instruct and chat-instruct modes, the instruction template selected under "Chat settings" must match the current model.')
+                shared.gradio['mode'] = gr.Radio(choices=['chat', 'chat-instruct', 'instruct'], value=shared.settings['mode'] if shared.settings['mode'] in ['chat', 'instruct', 'chat-instruct'] else 'chat', label='Mode', info='Defines how the chat prompt is generated. In instruct and chat-instruct modes, the instruction template selected under "🎭 Create-a-Character" must match the current model.')
                 shared.gradio['chat_style'] = gr.Dropdown(choices=utils.get_available_chat_styles(), label='Chat style', value=shared.settings['chat_style'], visible=shared.settings['mode'] != 'instruct')
 
-            with gr.Tab('Chat settings', elem_id='chat-settings'):
+            with gr.Tab('🎭 Create-a-Character', elem_id='chat-settings'):
                 with gr.Row():
                     with gr.Column(scale=8):
                         with gr.Row():
@@ -649,7 +649,7 @@ def create_interface():
                         gr.Markdown('### TavernAI PNG format')
                         shared.gradio['upload_img_tavern'] = gr.File(type='binary', file_types=['image'])
 
-            with gr.Tab("Parameters", elem_id="parameters"):
+            with gr.Tab("⚙️ Settings Station", elem_id="parameters"):
                 with gr.Box():
                     gr.Markdown("Chat parameters")
                     with gr.Row():
@@ -668,7 +668,7 @@ def create_interface():
             shared.input_elements = ui.list_interface_input_elements(chat=False)
             shared.gradio['interface_state'] = gr.State({k: None for k in shared.input_elements})
             shared.gradio['last_input'] = gr.State('')
-            with gr.Tab("Text generation", elem_id="main"):
+            with gr.Tab("💬 Chat Room", elem_id="main"):
                 with gr.Row():
                     with gr.Column(scale=4):
                         with gr.Tab('Raw'):
@@ -681,10 +681,10 @@ def create_interface():
                             shared.gradio['html'] = gr.HTML()
 
                         with gr.Row():
-                            shared.gradio['Generate'] = gr.Button('Generate', variant='primary', elem_classes="small-button")
-                            shared.gradio['Stop'] = gr.Button('Stop', elem_classes="small-button")
+                            shared.gradio['Generate'] = gr.Button('Send 🚀', variant='primary', elem_classes="small-button")
+                            shared.gradio['Stop'] = gr.Button('Stop 🛑', elem_classes="small-button")
                             shared.gradio['Undo'] = gr.Button('Undo', elem_classes="small-button")
-                            shared.gradio['Regenerate'] = gr.Button('Regenerate', elem_classes="small-button")
+                            shared.gradio['Regenerate'] = gr.Button('🔄 Regenerate', elem_classes="small-button")
 
                     with gr.Column(scale=1):
                         gr.HTML('<div style="padding-bottom: 13px"></div>')
@@ -699,7 +699,7 @@ def create_interface():
                         shared.gradio['count_tokens'] = gr.Button('Count tokens')
                         shared.gradio['status'] = gr.Markdown('')
 
-            with gr.Tab("Parameters", elem_id="parameters"):
+            with gr.Tab("⚙️ Settings Station", elem_id="parameters"):
                 create_settings_menus(default_preset)
 
         # Create default mode interface
@@ -707,15 +707,15 @@ def create_interface():
             shared.input_elements = ui.list_interface_input_elements(chat=False)
             shared.gradio['interface_state'] = gr.State({k: None for k in shared.input_elements})
             shared.gradio['last_input'] = gr.State('')
-            with gr.Tab("Text generation", elem_id="main"):
+            with gr.Tab("💬 Chat Room", elem_id="main"):
                 with gr.Row():
                     with gr.Column():
                         shared.gradio['textbox'] = gr.Textbox(value=default_text, elem_classes="textbox_default", lines=27, label='Input')
                         shared.gradio['max_new_tokens'] = gr.Slider(minimum=shared.settings['max_new_tokens_min'], maximum=shared.settings['max_new_tokens_max'], step=1, label='max_new_tokens', value=shared.settings['max_new_tokens'])
                         with gr.Row():
-                            shared.gradio['Generate'] = gr.Button('Generate', variant='primary', elem_classes="small-button")
-                            shared.gradio['Stop'] = gr.Button('Stop', elem_classes="small-button")
-                            shared.gradio['Continue'] = gr.Button('Continue', elem_classes="small-button")
+                            shared.gradio['Generate'] = gr.Button('Send 🚀', variant='primary', elem_classes="small-button")
+                            shared.gradio['Stop'] = gr.Button('Stop 🛑', elem_classes="small-button")
+                            shared.gradio['Continue'] = gr.Button('Continue ▶️', elem_classes="small-button")
                             shared.gradio['open_save_prompt'] = gr.Button('Save prompt', elem_classes="small-button")
                             shared.gradio['save_prompt'] = gr.Button('Confirm save prompt', visible=False, elem_classes="small-button")
                             shared.gradio['count_tokens'] = gr.Button('Count tokens', elem_classes="small-button")
@@ -740,7 +740,7 @@ def create_interface():
                         with gr.Tab('HTML'):
                             shared.gradio['html'] = gr.HTML()
 
-            with gr.Tab("Parameters", elem_id="parameters"):
+            with gr.Tab("⚙️ Settings Station", elem_id="parameters"):
                 create_settings_menus(default_preset)
 
         # Model tab
@@ -748,8 +748,8 @@ def create_interface():
             create_model_menus()
 
         # Training tab
-        with gr.Tab("Training", elem_id="training-tab"):
-            training.create_train_interface()
+        #with gr.Tab("Training", elem_id="training-tab"):
+            #training.create_train_interface()
 
         # Interface mode tab
         with gr.Tab("Interface mode", elem_id="interface-mode"):
@@ -822,23 +822,23 @@ def create_interface():
                 lambda: None, None, None, _js=f"() => {{{audio_notification_js}}}")
             )
 
-            shared.gradio['Replace last reply'].click(
-                chat.replace_last_reply, shared.gradio['textbox'], None).then(
-                lambda: '', None, shared.gradio['textbox'], show_progress=False).then(
-                chat.save_history, shared.gradio['mode'], None, show_progress=False).then(
-                chat.redraw_html, shared.reload_inputs, shared.gradio['display'])
+            #shared.gradio['Replace last reply'].click(
+                #chat.replace_last_reply, shared.gradio['textbox'], None).then(
+                #lambda: '', None, shared.gradio['textbox'], show_progress=False).then(
+                #chat.save_history, shared.gradio['mode'], None, show_progress=False).then(
+                #chat.redraw_html, shared.reload_inputs, shared.gradio['display'])
 
-            shared.gradio['Send dummy message'].click(
-                chat.send_dummy_message, shared.gradio['textbox'], None).then(
-                lambda: '', None, shared.gradio['textbox'], show_progress=False).then(
-                chat.save_history, shared.gradio['mode'], None, show_progress=False).then(
-                chat.redraw_html, shared.reload_inputs, shared.gradio['display'])
+            #shared.gradio['Send dummy message'].click(
+                #chat.send_dummy_message, shared.gradio['textbox'], None).then(
+                #lambda: '', None, shared.gradio['textbox'], show_progress=False).then(
+                #chat.save_history, shared.gradio['mode'], None, show_progress=False).then(
+                #chat.redraw_html, shared.reload_inputs, shared.gradio['display'])
 
-            shared.gradio['Send dummy reply'].click(
-                chat.send_dummy_reply, shared.gradio['textbox'], None).then(
-                lambda: '', None, shared.gradio['textbox'], show_progress=False).then(
-                chat.save_history, shared.gradio['mode'], None, show_progress=False).then(
-                chat.redraw_html, shared.reload_inputs, shared.gradio['display'])
+            #shared.gradio['Send dummy reply'].click(
+                #chat.send_dummy_reply, shared.gradio['textbox'], None).then(
+                #lambda: '', None, shared.gradio['textbox'], show_progress=False).then(
+                #chat.save_history, shared.gradio['mode'], None, show_progress=False).then(
+                #chat.redraw_html, shared.reload_inputs, shared.gradio['display'])
 
             shared.gradio['Clear history-confirm'].click(
                 lambda: [gr.update(visible=False), gr.update(visible=True), gr.update(visible=False)], None, clear_arr).then(
@@ -865,10 +865,10 @@ def create_interface():
             shared.gradio['Copy last reply'].click(chat.send_last_reply_to_input, None, shared.gradio['textbox'], show_progress=False)
             shared.gradio['Clear history'].click(lambda: [gr.update(visible=True), gr.update(visible=False), gr.update(visible=True)], None, clear_arr)
             shared.gradio['Clear history-cancel'].click(lambda: [gr.update(visible=False), gr.update(visible=True), gr.update(visible=False)], None, clear_arr)
-            shared.gradio['Remove last'].click(
-                chat.remove_last_message, None, shared.gradio['textbox'], show_progress=False).then(
-                chat.save_history, shared.gradio['mode'], None, show_progress=False).then(
-                chat.redraw_html, shared.reload_inputs, shared.gradio['display'])
+            #shared.gradio['Remove last'].click(
+                #chat.remove_last_message, None, shared.gradio['textbox'], show_progress=False).then(
+                #chat.save_history, shared.gradio['mode'], None, show_progress=False).then(
+                #chat.redraw_html, shared.reload_inputs, shared.gradio['display'])
 
             # Save/delete a character
             shared.gradio['save_character'].click(
@@ -964,9 +964,9 @@ def create_interface():
     # Launch the interface
     shared.gradio['interface'].queue()
     if shared.args.listen:
-        shared.gradio['interface'].launch(prevent_thread_lock=True, share=shared.args.share, server_name=shared.args.listen_host or '0.0.0.0', server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)
+        shared.gradio['interface'].launch(prevent_thread_lock=True, share=shared.args.share, server_name=shared.args.listen_host or '0.0.0.0', server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth,favicon_path='favicon.ico')
     else:
-        shared.gradio['interface'].launch(prevent_thread_lock=True, share=shared.args.share, server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)
+        shared.gradio['interface'].launch(prevent_thread_lock=True, share=shared.args.share, server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth,,favicon_path='favicon.ico')
 
 
 if __name__ == "__main__":
