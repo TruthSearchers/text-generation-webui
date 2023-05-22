@@ -160,67 +160,7 @@ def input_modifier(string):
 
 
 def ui():
-    with gr.Accordion("Click for more information...", open=False):
-        gr.Markdown(textwrap.dedent("""
-
-        ## About
-
-        This extension takes a dataset as input, breaks it into chunks, and adds the result to a local/offline Chroma database.
-
-        The database is then queried during inference time to get the excerpts that are closest to your input. The idea is to create an arbitrarily large pseudo context.
-
-        The core methodology was developed and contributed by kaiokendev, who is working on improvements to the method in this repository: https://github.com/kaiokendev/superbig
-
-        ## Data input
-
-        Start by entering some data in the interface below and then clicking on "Load data".
-
-        Each time you load some new data, the old chunks are discarded.
-
-        ## Chat mode
-
-        #### Instruct
-
-        On each turn, the chunks will be compared to your current input and the most relevant matches will be appended to the input in the following format:
-
-        ```
-        Consider the excerpts below as additional context:
-        ...
-        ```
-
-        The injection doesn't make it into the chat history. It is only used in the current generation.
-
-        #### Regular chat
-
-        The chunks from the external data sources are ignored, and the chroma database is built based on the chat history instead. The most relevant past exchanges relative to the present input are added to the context string. This way, the extension acts as a long term memory.
-
-        ## Notebook/default modes
-
-        Your question must be manually specified between `<|begin-user-input|>` and `<|end-user-input|>` tags, and the injection point must be specified with `<|injection-point|>`.
-
-        The special tokens mentioned above (`<|begin-user-input|>`, `<|end-user-input|>`, and `<|injection-point|>`) are removed in the background before the text generation begins.
-
-        Here is an example in Vicuna 1.1 format:
-
-        ```
-        A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.
-
-        USER:
-
-        <|begin-user-input|>
-        What datasets are mentioned in the text below?
-        <|end-user-input|>
-
-        <|injection-point|>
-
-        ASSISTANT:
-        ```
-
-        ⚠️  For best results, make sure to remove the spaces and new line characters after `ASSISTANT:`.
-
-        *This extension is currently experimental and under development.*
-
-        """))
+    
 
     with gr.Row():
         with gr.Column(min_width=600):
