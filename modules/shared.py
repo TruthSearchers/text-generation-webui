@@ -34,14 +34,14 @@ need_restart = False
 
 settings = {
     'autoload_model': True,
-    'max_new_tokens': 200,
+    'max_new_tokens': 900,
     'max_new_tokens_min': 1,
-    'max_new_tokens_max': 2000,
+    'max_new_tokens_max': 10000,
     'seed': -1,
     'character': 'None',
     'name1': 'You',
-    'name2': 'Assistant',
-    'context': 'This is a conversation with your Assistant. It is a computer program designed to help you with various tasks such as answering questions, providing recommendations, and helping with decision making. You can ask it anything you want and it will do its best to give you accurate and relevant information.',
+    'name2': 'Neo',
+    'context': 'This is a conversation with your Assistant name Neo. Neo is a computer program designed to help you with various tasks such as answering questions, providing recommendations, and helping with decision making. You can ask it anything you want and it will do its best to give you accurate and relevant information . Neo is created by Project Kai- An Ai startup and based on there large language model name kai',
     'greeting': '',
     'turn_template': '',
     'custom_stopping_strings': '',
@@ -62,8 +62,29 @@ settings = {
     'chat_generation_attempts': 1,
     'chat_generation_attempts_min': 1,
     'chat_generation_attempts_max': 10,
-    'default_extensions': [],
-    'chat_default_extensions': ["gallery"],
+    "code_syntax_highlight-activate": True,
+    "code_syntax_highlight-inline_highlight": True,
+    "code_syntax_highlight-performance_mode": False,
+    "default_extensions": [
+      "Internet",
+      "generate_image",
+      "send_pictures",      
+      "multi_translate",
+      "send_voice_message",
+      "code_syntax_highlight",
+      "telegram_bot"
+  
+    ],
+    "chat_default_extensions": [
+        "gallery",
+        "Internet",
+        "generate_image",
+        "send_pictures",      
+        "multi_translate",
+        "send_voice_message",
+        "code_syntax_highlight",
+        "telegram_bot"
+    ],
     'presets': {
         'default': 'Default',
         '.*(alpaca|llama|llava|vicuna)': "LLaMA-Precise",
@@ -167,7 +188,7 @@ parser.add_argument("--gradio-auth-path", type=str, help='Set the gradio authent
 
 # API
 parser.add_argument('--api', action='store_true', help='Enable the API extension.')
-parser.add_argument('--api-blocking-port', type=int, default=5000, help='The listening port for the blocking API.')
+parser.add_argument('--api-blocking-port', type=int, default=, help='The listening port for the blocking API.')
 parser.add_argument('--api-streaming-port', type=int,  default=5005, help='The listening port for the streaming API.')
 parser.add_argument('--public-api', action='store_true', help='Create a public URL for the API using Cloudfare.')
 
