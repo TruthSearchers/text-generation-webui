@@ -966,7 +966,7 @@ def create_interface():
     if shared.args.listen:
         shared.gradio['interface'].launch(prevent_thread_lock=True, share=shared.args.share, server_name=shared.args.listen_host or '0.0.0.0', server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth,favicon_path='favicon.ico')
     else:
-        shared.gradio['interface'].launch(prevent_thread_lock=True, share=shared.args.share, server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth,,favicon_path='favicon.ico')
+        shared.gradio['interface'].launch(prevent_thread_lock=True, share=shared.args.share, server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth,favicon_path='favicon.ico')
 
 
 if __name__ == "__main__":
