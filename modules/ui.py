@@ -18,10 +18,7 @@ refresh_symbol = '\U0001f504'  # 🔄
 delete_symbol = '🗑️'
 save_symbol = '💾'
 
-theme = gr.themes.Default(
-    font=['Helvetica', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-    font_mono=['IBM Plex Mono', 'ui-monospace', 'Consolas', 'monospace'],
-).set(
+theme = gr.Theme.from_hub('finlaymacklon/boxy_violet').set(
     border_color_primary='#c5c5d2',
     button_large_padding='6px 12px',
     body_text_color_subdued='#484848',
