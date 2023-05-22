@@ -157,13 +157,13 @@ def get_SD_pictures(description):
             img_data = base64.b64decode(img_str)
 
             variadic = f'{date.today().strftime("%Y_%m_%d")}/{shared.character}_{int(time.time())}'
-            output_file = Path(f'extensions/sd_api_pictures/outputs/{variadic}.png')
+            output_file = Path(f'extensions/generate_image/outputs/{variadic}.png')
             output_file.parent.mkdir(parents=True, exist_ok=True)
 
             with open(output_file.as_posix(), 'wb') as f:
                 f.write(img_data)
 
-            visible_result = visible_result + f'<img src="/file/extensions/sd_api_pictures/outputs/{variadic}.png" alt="{description}" style="max-width: unset; max-height: unset;">\n'
+            visible_result = visible_result + f'<img src="/file/extensions/generate_image/outputs/{variadic}.png" alt="{description}" style="max-width: unset; max-height: unset;">\n'
         else:
             image = Image.open(io.BytesIO(base64.b64decode(img_str.split(",", 1)[0])))
             # lower the resolution of received images for the chat, otherwise the log size gets out of control quickly with all the base64 values in visible history
@@ -273,10 +273,10 @@ def ui():
     with gr.Accordion("Parameters", open=True, elem_classes="SDAP"):
         with gr.Row():
             address = gr.Textbox(placeholder=params['address'], value=params['address'], label='Auto1111\'s WebUI address')
-            modes_list = ["Manual", "Immersive/Interactive", "Picturebook/Adventure"]
+            modes_list = ["Only Image", "Image with Prompt", "Image with Text (Picturebook/Adventure Style)"]
             mode = gr.Dropdown(modes_list, value=modes_list[params['mode']], label="Mode of operation", type="index")
             with gr.Column(scale=1, min_width=300):
-                manage_VRAM = gr.Checkbox(value=params['manage_VRAM'], label='Manage VRAM')
+                #manage_VRAM = gr.Checkbox(value=params['manage_VRAM'], label='Manage VRAM')
                 save_img = gr.Checkbox(value=params['save_img'], label='Keep original images and use them in chat')
 
             force_pic = gr.Button("Force the picture response")
@@ -307,8 +307,8 @@ def ui():
     address.change(lambda x: params.update({"address": filter_address(x)}), address, None)
     mode.select(lambda x: params.update({"mode": x}), mode, None)
     mode.select(lambda x: toggle_generation(x > 1), inputs=mode, outputs=None)
-    manage_VRAM.change(lambda x: params.update({"manage_VRAM": x}), manage_VRAM, None)
-    manage_VRAM.change(lambda x: give_VRAM_priority('set' if x else 'reset'), inputs=manage_VRAM, outputs=None)
+    #manage_VRAM.change(lambda x: params.update({"manage_VRAM": x}), manage_VRAM, None)
+    #manage_VRAM.change(lambda x: give_VRAM_priority('set' if x else 'reset'), inputs=manage_VRAM, outputs=None)
     save_img.change(lambda x: params.update({"save_img": x}), save_img, None)
 
     address.submit(fn=SD_api_address_update, inputs=address, outputs=address)
