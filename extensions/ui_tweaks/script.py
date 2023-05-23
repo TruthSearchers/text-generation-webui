@@ -8,7 +8,7 @@ ext_bar_css = os.path.join(current_dir, "ext_bar.css")
 ext_bar_js = os.path.join(current_dir, "ext_bar.js")
 
 params = {
-    "display_name": "UI Tweaks (Restart to apply)",
+    "display_name": "UI",
     "is_tab": False,
     "sticky_tabs": True,
     "ext_bar": True,
@@ -62,5 +62,5 @@ def ui():
     set_w.change(lambda x: params.update({"bar_width": x}), set_w, None)
     
     #ext button
-    btn = gr.Button("Extensions", elem_id = "ext_toggle", visible=params['ext_bar']) 
+    btn = gr.Button("More Features", elem_id = "ext_toggle", visible=params['ext_bar']) 
     btn.click(None, None, None)
