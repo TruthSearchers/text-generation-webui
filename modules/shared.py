@@ -72,7 +72,8 @@ settings = {
       "multi_translate",
       "send_voice_message",
       "code_syntax_highlight",
-      "telegram_bot"
+      "telegram_bot",
+      "ui_tweaks"
   
     ],
     "chat_default_extensions": [
@@ -84,6 +85,7 @@ settings = {
         "send_voice_message",
         "code_syntax_highlight",
         "telegram_bot"
+        "ui_tweaks"
     ],
     'presets': {
         'default': 'Default',
