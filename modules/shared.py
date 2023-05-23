@@ -84,7 +84,7 @@ settings = {
         "multi_translate",
         "send_voice_message",
         "code_syntax_highlight",
-        "telegram_bot"
+        "telegram_bot",
         "ui_tweaks"
     ],
     'presets': {
