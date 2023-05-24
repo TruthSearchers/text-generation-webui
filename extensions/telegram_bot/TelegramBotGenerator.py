@@ -20,6 +20,7 @@ def get_answer(
     generation_params.update({"context": user['context']})
     generation_params.update({"greeting": user['greeting']})
     generation_params.update({"stream": False})
+    stopping_strings.append(r"\end{code}")
     generator = generate_reply(question=prompt,
                                state=generation_params,
                                eos_token=eos_token,
