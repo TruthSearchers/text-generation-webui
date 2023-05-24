@@ -62,15 +62,16 @@ def remove_surrounded_chars(string):
 
 
 def state_modifier(state):
+    if not params['activate']:
+        return state
     state['stream'] = False
     return state
 
 
 def input_modifier(string):
-    """
-    This function is applied to your text inputs before
-    they are fed into the model.
-    """
+    if not params['activate']:
+        return state
+    
 
     shared.processing_message = "*Is recording a voice message...*"
     return string
