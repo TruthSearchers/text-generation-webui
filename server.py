@@ -38,6 +38,7 @@ import zipfile
 from datetime import datetime
 from functools import partial
 from pathlib import Path
+from threading import Lock
 
 import psutil
 import torch
@@ -286,11 +287,15 @@ def save_model_settings(model, state):
             user_config = {}
 
         model_regex = model + '$'  # For exact matches
+        for _dict in [user_config, shared.model_config]:
+            if model_regex not in _dict:
+                _dict[model_regex] = {}
         if model_regex not in user_config:
             user_config[model_regex] = {}
 
         for k in ui.list_model_elements():
             user_config[model_regex][k] = state[k]
+            shared.model_config[model_regex][k] = state[k]
 
         with open(p, 'w') as f:
             f.write(yaml.dump(user_config))
@@ -1068,7 +1073,8 @@ if __name__ == "__main__":
             'character_menu': shared.args.character or shared.settings['character'],
             'instruction_template': shared.settings['instruction_template']
         })
-
+    
+    shared.generation_lock = Lock()
     # Launch the web UI
     create_interface()
     while True:
