@@ -92,7 +92,7 @@ settings = {
         'default': 'Default',
         '.*(alpaca|llama|llava|vicuna)': "LLaMA-Precise",
         '.*pygmalion': 'NovelAI-Storywriter',
-        '.*RWKV': 'Naive',
+        '.*RWKV.*\.pth': 'Naive',
         '.*moss': 'MOSS',
     },
     'prompts': {
