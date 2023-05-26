@@ -28,7 +28,7 @@ ipython
 num2words
 omegaconf
 pydub
-git+https://github.com/Uberi/speech_recognition.git@010382b80267f0f7794169fccc8e875ee7da7c19
+SpeechRecognition==3.10.0
 openai-whisper
 ffmpeg
 pytest
