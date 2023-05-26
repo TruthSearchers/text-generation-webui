@@ -350,7 +350,7 @@ def create_model_menus():
     with gr.Row():
         with gr.Column():
             with gr.Box():
-                gr.Markdown('Transformers parameters')
+                gr.Markdown('Transformers')
                 with gr.Row():
                     with gr.Column():
                         for i in range(len(total_mem)):
@@ -364,9 +364,26 @@ def create_model_menus():
                         shared.gradio['bf16'] = gr.Checkbox(label="bf16", value=shared.args.bf16)
                         shared.gradio['load_in_8bit'] = gr.Checkbox(label="load-in-8bit", value=shared.args.load_in_8bit)
 
+        
+            with gr.Box():
+                gr.Markdown('Transformers 4-bit')
+                with gr.Row():
+                    with gr.Column():
+                        shared.gradio['load_in_4bit'] = gr.Checkbox(label="load-in-4bit", value=shared.args.load_in_4bit)
+                        shared.gradio['use_double_quant'] = gr.Checkbox(label="use_double_quant", value=shared.args.use_double_quant)
+                    with gr.Column():
+                        shared.gradio['compute_dtype'] = gr.Dropdown(label="compute_dtype", choices=["bfloat16", "float16", "float32"], value=shared.args.compute_dtype)
+                        shared.gradio['quant_type'] = gr.Dropdown(label="quant_type", choices=["nf4", "fp4"], value=shared.args.quant_type)
+    
+            with gr.Row():
+                shared.gradio['autoload_model'] = gr.Checkbox(value=shared.settings['autoload_model'], label='Autoload the model', info='Whether to load the model as soon as it is selected in the Model dropdown.')
+
+            shared.gradio['custom_model_menu'] = gr.Textbox(label="Download custom model or LoRA", info="Enter the Hugging Face username/model path, for instance: facebook/galactica-125m. To specify a branch, add it at the end after a \":\" character like this: facebook/galactica-125m:main")
+            shared.gradio['download_model_button'] = gr.Button("Download")
+
         with gr.Column():
             with gr.Box():
-                gr.Markdown('GPTQ parameters')
+                gr.Markdown('GPTQ')
                 with gr.Row():
                     with gr.Column():
                         shared.gradio['wbits'] = gr.Dropdown(label="wbits", choices=["None", 1, 2, 3, 4, 8], value=shared.args.wbits if shared.args.wbits > 0 else "None")
@@ -376,26 +393,19 @@ def create_model_menus():
                         shared.gradio['model_type'] = gr.Dropdown(label="model_type", choices=["None", "llama", "opt", "gptj"], value=shared.args.model_type or "None")
                         shared.gradio['pre_layer'] = gr.Slider(label="pre_layer", minimum=0, maximum=100, value=shared.args.pre_layer[0] if shared.args.pre_layer is not None else 0)
 
-    with gr.Row():
-        with gr.Column():
-            with gr.Row():
-                shared.gradio['autoload_model'] = gr.Checkbox(value=shared.settings['autoload_model'], label='Autoload the model', info='Whether to load the model as soon as it is selected in the Model dropdown.')
-
-            shared.gradio['custom_model_menu'] = gr.Textbox(label="Download custom model or LoRA", info="Enter the Hugging Face username/model path, for instance: facebook/galactica-125m. To specify a branch, add it at the end after a \":\" character like this: facebook/galactica-125m:main")
-            shared.gradio['download_model_button'] = gr.Button("Download")
-
-        with gr.Column():
             with gr.Box():
-                gr.Markdown('llama.cpp parameters')
+                gr.Markdown('llama.cpp')
                 with gr.Row():
                     with gr.Column():
                         shared.gradio['threads'] = gr.Slider(label="threads", minimum=0, step=1, maximum=32, value=shared.args.threads)
                         shared.gradio['n_batch'] = gr.Slider(label="n_batch", minimum=1, maximum=2048, value=shared.args.n_batch)
                         shared.gradio['n_gpu_layers'] = gr.Slider(label="n-gpu-layers", minimum=0, maximum=128, value=shared.args.n_gpu_layers)
+                        shared.gradio['n_ctx'] = gr.Slider(minimum=0, maximum=8192, step=1, label="n_ctx", value=shared.args.n_ctx)
 
                     with gr.Column():
                         shared.gradio['no_mmap'] = gr.Checkbox(label="no-mmap", value=shared.args.no_mmap)
                         shared.gradio['mlock'] = gr.Checkbox(label="mlock", value=shared.args.mlock)
+                        shared.gradio['llama_cpp_seed'] = gr.Number(label='Seed (0 for random)', value=shared.args.llama_cpp_seed)
 
             with gr.Row():
                 shared.gradio['model_status'] = gr.Markdown('No model is loaded' if shared.model_name == 'None' else 'Ready')
@@ -693,9 +703,11 @@ def create_interface():
                             shared.gradio['textbox'] = gr.Textbox(value=default_text, elem_classes="textbox", lines=27)
 
                         with gr.Tab('Markdown'):
+                            shared.gradio['markdown_render'] = gr.Button('Render')
                             shared.gradio['markdown'] = gr.Markdown()
 
                         with gr.Tab('HTML'):
+                          
                             shared.gradio['html'] = gr.HTML()
 
                         with gr.Row():
@@ -753,6 +765,7 @@ def create_interface():
                             shared.gradio['output_textbox'] = gr.Textbox(elem_classes="textbox_default_output", lines=27, label='Output')
 
                         with gr.Tab('Markdown'):
+                            shared.gradio['markdown_render'] = gr.Button('Render')
                             shared.gradio['markdown'] = gr.Markdown()
 
                         with gr.Tab('HTML'):
@@ -928,9 +941,9 @@ def create_interface():
         else:
             shared.input_params = [shared.gradio[k] for k in ['textbox', 'interface_state']]
             if shared.args.notebook:
-                output_params = [shared.gradio[k] for k in ['textbox', 'markdown', 'html']]
+                output_params = [shared.gradio[k] for k in ['textbox', 'html']]
             else:
-                output_params = [shared.gradio[k] for k in ['output_textbox', 'markdown', 'html']]
+                output_params = [shared.gradio[k] for k in ['output_textbox', 'html']]
 
             gen_events.append(shared.gradio['Generate'].click(
                 lambda x: x, shared.gradio['textbox'], shared.gradio['last_input']).then(
@@ -950,6 +963,7 @@ def create_interface():
 
             if shared.args.notebook:
                 shared.gradio['Undo'].click(lambda x: x, shared.gradio['last_input'], shared.gradio['textbox'], show_progress=False)
+                shared.gradio['markdown_render'].click(lambda x: x, shared.gradio['textbox'], shared.gradio['markdown'], queue=False)
                 gen_events.append(shared.gradio['Regenerate'].click(
                     lambda x: x, shared.gradio['last_input'], shared.gradio['textbox'], show_progress=False).then(
                     ui.gather_interface_values, [shared.gradio[k] for k in shared.input_elements], shared.gradio['interface_state']).then(
@@ -958,6 +972,7 @@ def create_interface():
                     # lambda: None, None, None, _js="() => {element = document.getElementsByTagName('textarea')[0]; element.scrollTop = element.scrollHeight}")
                 )
             else:
+                shared.gradio['markdown_render'].click(lambda x: x, shared.gradio['output_textbox'], shared.gradio['markdown'], queue=False)
                 gen_events.append(shared.gradio['Continue'].click(
                     ui.gather_interface_values, [shared.gradio[k] for k in shared.input_elements], shared.gradio['interface_state']).then(
                     generate_reply_wrapper, [shared.gradio['output_textbox']] + shared.input_params[1:], output_params, show_progress=False).then(
@@ -973,7 +988,7 @@ def create_interface():
 
         shared.gradio['interface'].load(lambda: None, None, None, _js=f"() => {{{js}}}")
         if shared.settings['dark_theme']:
-            shared.gradio['interface'].load(lambda: None, None, None, _js=f"() => document.getElementsByTagName('body')[0].classList.add('dark')")
+            shared.gradio['interface'].load(lambda: None, None, None, _js="() => document.getElementsByTagName('body')[0].classList.add('dark')")
         shared.gradio['interface'].load(partial(ui.apply_interface_values, {}, use_persistent=True), None, [shared.gradio[k] for k in ui.list_interface_input_elements(chat=shared.is_chat())], show_progress=False)
         # Extensions tabs
         extensions_module.create_extensions_tabs()
