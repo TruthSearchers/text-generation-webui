@@ -90,7 +90,7 @@ class Handler(BaseHTTPRequestHandler):
                 'results': 'success'
             })
 
-            self.wfile.write(response.encode('utf-8')
+            self.wfile.write(response.encode('utf-8'))
                              
         elif self.path == '/api/v1/token-count':
             self.send_response(200)
