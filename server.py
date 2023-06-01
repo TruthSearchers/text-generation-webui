@@ -89,6 +89,8 @@ def load_preset_values(preset_menu, state, return_dict=False):
         'typical_p': 1,
         'epsilon_cutoff': 0,
         'eta_cutoff': 0,
+        'tfs': 1,
+        'top_a': 0,
         'repetition_penalty': 1,
         'encoder_repetition_penalty': 1,
         'top_k': 50,
@@ -101,8 +103,7 @@ def load_preset_values(preset_menu, state, return_dict=False):
         'mirostat_mode': 0,
         'mirostat_tau': 5.0,
         'mirostat_eta': 0.1,
-        'tfs': 1,
-        'top_a': 0,
+        
     }
     with open(Path(f'presets/{preset_menu}.txt'), 'r') as infile:
         preset = infile.read()
@@ -182,7 +183,8 @@ def count_tokens(text):
 
 def download_model_wrapper(repo_id):
     try:
-        downloader = importlib.import_module("download-model")
+        downloader_module = importlib.import_module("download-model")
+        downloader = downloader_module.ModelDownloader()
         repo_id_parts = repo_id.split(":")
         model = repo_id_parts[0] if len(repo_id_parts) > 0 else repo_id
         branch = repo_id_parts[1] if len(repo_id_parts) > 1 else "main"
