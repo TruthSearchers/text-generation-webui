@@ -67,7 +67,7 @@ settings = {
     "code_syntax_highlight-inline_highlight": True,
     "code_syntax_highlight-performance_mode": False,
     "default_extensions": [
-      "Internet",
+      
       "generate_image",
       "send_pictures",      
       "multi_translate",
@@ -79,7 +79,6 @@ settings = {
     ],
     "chat_default_extensions": [
         "gallery",
-        "Internet",
         "generate_image",
         "send_pictures",      
         "multi_translate",
