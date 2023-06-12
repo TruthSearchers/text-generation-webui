@@ -1032,22 +1032,21 @@ def create_interface():
                 )
 
             shared.gradio['Stop'].click(stop_everything_event, None, None, queue=False, cancels=gen_events if shared.args.no_stream else None)
-            create_file_saving_event_handlers()
+            shared.gradio['prompt_menu'].change(load_prompt, shared.gradio['prompt_menu'], shared.gradio['textbox'], show_progress=False)
+            shared.gradio['save_prompt'].click(
+                lambda x: x, shared.gradio['textbox'], shared.gradio['save_contents']).then(
+                lambda: 'prompts/', None, shared.gradio['save_root']).then(
+                lambda: current_time() + '.txt', None, shared.gradio['save_filename']).then(
+                lambda: gr.update(visible=True), None, shared.gradio['file_saver'])
+
+            shared.gradio['delete_prompt'].click(
+                lambda: 'prompts/', None, shared.gradio['delete_root']).then(
+                lambda x: x + '.txt', shared.gradio['prompt_menu'], shared.gradio['delete_filename']).then(
+                lambda: gr.update(visible=True), None, shared.gradio['file_deleter'])
 
             shared.gradio['count_tokens'].click(count_tokens, shared.gradio['textbox'], shared.gradio['status'], show_progress=False)
 
-        shared.gradio['save_preset'].click(
-            ui.gather_interface_values, [shared.gradio[k] for k in shared.input_elements], shared.gradio['interface_state']).then(
-            generate_preset_yaml, shared.gradio['interface_state'], shared.gradio['save_contents']).then(
-            lambda: 'presets/', None, shared.gradio['save_root']).then(
-            lambda: 'My Preset.yaml', None, shared.gradio['save_filename']).then(
-            lambda: gr.update(visible=True), None, shared.gradio['file_saver'])
-
-        shared.gradio['delete_preset'].click(
-            lambda x: f'{x}.yaml', shared.gradio['preset_menu'], shared.gradio['delete_filename']).then(
-            lambda: 'presets/', None, shared.gradio['delete_root']).then(
-            lambda: gr.update(visible=True), None, shared.gradio['file_deleter'])
-
+        create_file_saving_event_handlers()
         shared.gradio['interface'].load(lambda: None, None, None, _js=f"() => {{{js}}}")
         if shared.settings['dark_theme']:
             shared.gradio['interface'].load(lambda: None, None, None, _js="() => document.getElementsByTagName('body')[0].classList.add('dark')")
