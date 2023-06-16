@@ -28,7 +28,7 @@ def load_preset(name):
         'mirostat_eta': 0.1,
     }
 
-    with open(Path(f'presets/{preset_menu}.txt'), 'r') as infile:
+    with open(Path(f'presets/{name}.yaml'), 'r') as infile:
         preset = infile.read()
     for i in preset.splitlines():
         i = i.rstrip(',').strip().split('=')
