@@ -28,11 +28,12 @@ def load_preset(name):
         'mirostat_eta': 0.1,
     }
 
-    with open(Path(f'presets/{name}.yaml'), 'r') as infile:
-        preset = yaml.safe_load(infile)
-
-    for k in preset:
-        generate_params[k] = preset[k]
+    with open(Path(f'presets/{preset_menu}.txt'), 'r') as infile:
+        preset = infile.read()
+    for i in preset.splitlines():
+        i = i.rstrip(',').strip().split('=')
+        if len(i) == 2 and i[0].strip() != 'tokens':
+            generate_params[i[0].strip()] = eval(i[1].strip())
 
     generate_params['temperature'] = min(1.99, generate_params['temperature'])
     return generate_params
