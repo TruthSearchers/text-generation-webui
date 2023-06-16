@@ -52,3 +52,4 @@ TTs
 timm==0.6.13
 torch
 ngrok==0.*
+oobabot-plugin
