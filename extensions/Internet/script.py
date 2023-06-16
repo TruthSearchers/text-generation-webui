@@ -11,22 +11,7 @@ from modules.text_generation import (get_max_prompt_length, get_encoded_length)
 from modules.extensions import apply_extensions
 
 
-#------------------------------------------------------------
-# Get current acheong08 EdgeGPT version installed
-#------------------------------------------------------------
-# Run "conda list EdgeGPT" and get output
-command = "conda list EdgeGPT"
-conda_version = subprocess.check_output(command, shell=True)
-# Decode output into string
-conda_version_output = conda_version.decode("utf-8")
-# Find version
-pattern = r"edgegpt\s+(\S+)"
-match = re.search(pattern, conda_version_output)
-if match:
-    version = match.group(1)
-    print("Internet core script: ", version)
-else:
-    print("Version not found.")
+
 
 #------------------------------------------------------------
 # Normal oobaboga webui
