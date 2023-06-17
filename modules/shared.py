@@ -225,7 +225,7 @@ if args.flexgen:
     logger.warning('--flexgen has been deprecated and will be removed soon. Use --loader flexgen instead.')
     args.loader = 'FlexGen'
 elif name in ['exllama', 'ex-llama', 'ex_llama', 'exlama']:
-        return 'ExLlama'    
+    return 'ExLlama'    
     
 
 # Security warnings
