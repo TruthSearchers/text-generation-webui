@@ -9,7 +9,7 @@ generation_lock = None
 model = None
 tokenizer = None
 model_name = "None"
-model_type = None
+
 lora_names = []
 
 
@@ -127,6 +127,8 @@ parser.add_argument('--no-stream', action='store_true', help='Don\'t stream the 
 parser.add_argument('--settings', type=str, help='Load the default interface settings from this json file. See settings-template.json for an example. If you create a file called settings.json, this file will be loaded by default without the need to use the --settings flag.')
 parser.add_argument('--extensions', type=str, nargs="+", help='The list of extensions to load. If you want to load more than one extension, write the names separated by spaces.')
 parser.add_argument('--verbose', action='store_true', help='Print the prompts to the terminal.')
+# Model loader
+parser.add_argument('--loader', type=str, help='Choose the model loader manually, otherwise, it will get autodetected. Valid options: autogptq, gptq-for-llama, transformers, llamacpp, rwkv, flexgen')
 
 # Accelerate/transformers
 parser.add_argument('--cpu', action='store_true', help='Use the CPU to generate text. Warning: Training on CPU is extremely slow.')
@@ -213,14 +215,35 @@ args_defaults = parser.parse_args([])
 
 # Deprecation warnings
 if args.autogptq:
-    logger.warning('--autogptq has been deprecated and will be removed soon. AutoGPTQ is now used by default for GPTQ models.')
+    logger.warning('--autogptq has been deprecated and will be removed soon. Use --loader autogptq instead.')
+    args.loader = 'autogptq'
+if args.gptq_for_llama:
+    logger.warning('--gptq-for-llama has been deprecated and will be removed soon. Use --loader gptq-for-llama instead.')
+    args.loader = 'gptq-for-llama'
+if args.flexgen:
+    logger.warning('--flexgen has been deprecated and will be removed soon. Use --loader flexgen instead.')
+    args.loader = 'FlexGen'
 
 # Security warnings
 if args.trust_remote_code:
     logger.warning("trust_remote_code is enabled. This is dangerous.")
 if args.share:
     logger.warning("The gradio \"share link\" feature downloads a proprietary and unaudited blob to create a reverse tunnel. This is potentially dangerous.")
+def fix_loader_name(name):
+    name = name.lower()
+    if name in ['llamacpp', 'llama.cpp', 'llama-cpp', 'llama cpp']:
+        return 'llama.cpp'
+    elif name in ['transformers', 'huggingface', 'hf', 'hugging_face', 'hugging face']:
+        return 'Transformers'
+    elif name in ['autogptq', 'auto-gptq', 'auto_gptq', 'auto gptq']:
+        return 'AutoGPTQ'
+    elif name in ['gptq-for-llama', 'gptqforllama', 'gptqllama', 'gptq for llama', 'gptq_for_llama']:
+        return 'GPTQ-for-LLaMa'
 
+
+if args.loader is not None:
+    args.loader = fix_loader_name(args.loader)
+   
 
 def add_extension(name):
     if args.extensions is None:
