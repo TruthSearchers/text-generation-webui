@@ -9,13 +9,13 @@ ext_bar_js = os.path.join(current_dir, "ext_bar.js")
 ext_bar_hide_js = os.path.join(current_dir, "ext_bar_hide.js")
 
 params = {
-    "display_name": "UI Tweaks (Restart interface to apply)",
+    "display_name": "✨ UI",
     "is_tab": False,
     "sticky_tabs": True,
     "ext_bar": True,
     "bar_init_show":False,
-    "bar_easy_hide":False,
-    "bar_dyna_height":False,
+    "bar_easy_hide":True,
+    "bar_dyna_height":True,
     "bar_width": 500,
 }
 
@@ -60,8 +60,8 @@ def custom_css():
 def ui():    
     with gr.Row():
         sticky = gr.Checkbox(value=params['sticky_tabs'], label='Use sticky tabs')
-        ext = gr.Checkbox(value=params['ext_bar'], label='Use extension sidebar')
-    with gr.Accordion("Extension sidebar settings", open=False):
+        ext = gr.Checkbox(value=params['ext_bar'], label='Use  sidebar')
+    with gr.Accordion("sidebar settings", open=False):
         show = gr.Checkbox(value=params['bar_init_show'], label='Open sidebar on startup')
         hide = gr.Checkbox(value=params['bar_easy_hide'], label='Click anywhere to hide sidebar')
         dyna_h = gr.Checkbox(value=params['bar_dyna_height'], label='Dynamic sidebar height')
@@ -77,5 +77,5 @@ def ui():
     set_w.change(lambda x: params.update({"bar_width": x}), set_w, None)
     
     #ext button
-    btn = gr.Button("Extensions", elem_id = "ext_toggle", visible=params['ext_bar']) 
+    btn = gr.Button("✨ More Features", elem_id = "ext_toggle", visible=params['ext_bar']) 
     btn.click(None, None, None)
