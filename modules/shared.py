@@ -74,7 +74,8 @@ settings = {
       "send_voice_message",
       "code_syntax_highlight",
       "telegram_bot",
-      "ui_tweaks"
+      "ui_tweaks",
+      "discord_bot"
   
     ],
     "chat_default_extensions": [
@@ -85,7 +86,8 @@ settings = {
         "send_voice_message",
         "code_syntax_highlight",
         "telegram_bot",
-        "ui_tweaks"
+        "ui_tweaks",
+        "discord_bot"
     ],
     'presets': {
         'default': 'Default',
