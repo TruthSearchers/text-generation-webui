@@ -224,8 +224,7 @@ if args.gptq_for_llama:
 if args.flexgen:
     logger.warning('--flexgen has been deprecated and will be removed soon. Use --loader flexgen instead.')
     args.loader = 'FlexGen'
-elif name in ['exllama', 'ex-llama', 'ex_llama', 'exlama']:
-    return 'ExLlama'    
+    
     
 
 # Security warnings
@@ -243,6 +242,8 @@ def fix_loader_name(name):
         return 'AutoGPTQ'
     elif name in ['gptq-for-llama', 'gptqforllama', 'gptqllama', 'gptq for llama', 'gptq_for_llama']:
         return 'GPTQ-for-LLaMa'
+    elif name in ['exllama', 'ex-llama', 'ex_llama', 'exlama']:
+        return 'ExLlama'
 
 
 if args.loader is not None:
