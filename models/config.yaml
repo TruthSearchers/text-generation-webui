@@ -182,3 +182,18 @@ llama-65b-gptq-3bit:
   auto_devices: true
   bf16: true
   trust_remote_code: true
+.*(A|a)lpa(cino|sta):
+  mode: 'instruct'
+  instruction_template: 'Alpaca'
+.*hippogriff:
+  mode: 'instruct'
+  instruction_template: 'Hippogriff'
+.*gpt4all-.*-snoozy:
+  mode: 'instruct'
+  instruction_template: 'WizardLM'
+.*(L|l)azarus:
+  mode: 'instruct'
+  instruction_template: 'Alpaca'
+.*(G|g)uanaco-.*(7|13|33|65)(b|B):
+  mode: 'instruct'
+  instruction_template: 'Guanaco'
