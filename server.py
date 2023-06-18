@@ -99,7 +99,11 @@ def load_prompt(fname):
         return ''
     elif fname.startswith('Instruct-'):
         fname = re.sub('^Instruct-', '', fname)
-        with open(Path(f'characters/instruction-following/{fname}.yaml'), 'r', encoding='utf-8') as f:
+        file_path = Path(f'characters/instruction-following/{fname}.yaml')
+        if not file_path.exists():
+            return ''
+
+        with open(file_path, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f)
             output = ''
             if 'context' in data:
@@ -114,7 +118,11 @@ def load_prompt(fname):
             output += utils.replace_all(data['turn_template'].split('<|bot-message|>')[0], replacements)
             return output.rstrip(' ')
     else:
-        with open(Path(f'prompts/{fname}.txt'), 'r', encoding='utf-8') as f:
+        file_path = Path(f'prompts/{fname}.txt')
+        if not file_path.exists():
+            return ''
+
+        with open(file_path, 'r', encoding='utf-8') as f:
             text = f.read()
             if text[-1] == '\n':
                 text = text[:-1]
@@ -241,7 +249,7 @@ def create_model_menus():
                         shared.gradio['auto_devices'] = gr.Checkbox(label="auto-devices", value=shared.args.auto_devices)
                         shared.gradio['disk'] = gr.Checkbox(label="disk", value=shared.args.disk)
                         
-                        shared.gradio['load_in_4bit'] = gr.Checkbox(label="load-in-4bit")
+                        shared.gradio['load_in_4bit'] = gr.Checkbox(label="load-in-4bit", value=shared.args.load_in_4bit)
                         shared.gradio['use_double_quant'] = gr.Checkbox(label="use_double_quant", value=shared.args.use_double_quant)
                         shared.gradio['no_mmap'] = gr.Checkbox(label="no-mmap", value=shared.args.no_mmap)
                         shared.gradio['mlock'] = gr.Checkbox(label="mlock", value=shared.args.mlock)
