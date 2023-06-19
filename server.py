@@ -538,10 +538,19 @@ def create_interface():
                     shared.gradio['Clear history-cancel'] = gr.Button('Cancel ❌', visible=False)
 
                 with gr.Row():
-                    shared.gradio['start_with'] = gr.Textbox(label='Start reply with', placeholder='Sure thing!', value=shared.settings['start_with'])
+                    def uncensored(choice):
+                      if choice==True:
+                        return gr.Textbox.update(visible=False, value=shared.settings['start_with'])
+                      else:
+                        return gr.Textbox.update(visible=False, value='')
+
+
+                    checkbox=gr.Checkbox(label='Make it Uncensored')
+                    shared.gradio['start_with']=gr.Textbox(visible=False, value='')
+                    checkbox.change(fn=uncensored,inputs=checkbox,outputs=shared.gradio['start_with'])
 
                 with gr.Row():
-                    shared.gradio['mode'] = gr.Radio(choices=['chat', 'chat-instruct', 'instruct'], value=shared.settings['mode'] if shared.settings['mode'] in ['chat', 'instruct', 'chat-instruct'] else 'chat', label='Mode', info='Defines how the chat prompt is generated. In instruct and chat-instruct modes, the instruction template selected under "Chat settings" must match the current model.')
+                    shared.gradio['mode'] = gr.Radio(choices=['chat'], value=shared.settings['mode'] if shared.settings['mode'] in ['chat', 'instruct', 'chat-instruct'] else 'chat', label='Mode', info='Defines how the chat prompt is generated. In instruct and chat-instruct modes, the instruction template selected under "Chat settings" must match the current model.')
                     shared.gradio['chat_style'] = gr.Dropdown(choices=utils.get_available_chat_styles(), label='Chat style', value=shared.settings['chat_style'], visible=shared.settings['mode'] != 'instruct')
             with gr.Tab('🎭 Create-a-Character', elem_id='chat-settings'):
                 with gr.Row():
