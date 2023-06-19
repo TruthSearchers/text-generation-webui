@@ -54,7 +54,7 @@ settings = {
     'truncation_length_min': 0,
     'truncation_length_max': 8192,
     'mode': 'chat',
-    'start_with': '',
+    'start_with': 'Sure thing!',
     'chat_style': 'cai-chat',
     'instruction_template': 'None',
     'chat-instruct_command': 'Continue the chat dialogue below. Write a single reply for the character "<|character|>".\n\n<|prompt|>',
