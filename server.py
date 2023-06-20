@@ -572,17 +572,17 @@ def create_interface():
 
                 with gr.Row():
                     with gr.Row():
-                        shared.gradio['instruction_template'] = gr.Dropdown(choices=utils.get_available_instruction_templates(), label='Instruction template', value='None', info='Change this according to the model/LoRA that you are using. Used in instruct and chat-instruct modes.', elem_classes='slim-dropdown')
-                        ui.create_refresh_button(shared.gradio['instruction_template'], lambda: None, lambda: {'choices': utils.get_available_instruction_templates()}, 'refresh-button')
-                        shared.gradio['save_template'] = gr.Button('💾', elem_classes='refresh-button')
-                        shared.gradio['delete_template'] = gr.Button('🗑️ ', elem_classes='refresh-button')
+                        shared.gradio['instruction_template'] = gr.Dropdown(visible=False,choices=utils.get_available_instruction_templates(), label='Instruction template', value='None', info='Change this according to the model/LoRA that you are using. Used in instruct and chat-instruct modes.', elem_classes='slim-dropdown')
+                        #ui.create_refresh_button(shared.gradio['instruction_template'], lambda: None, lambda: {'choices': utils.get_available_instruction_templates()}, 'refresh-button')
+                        shared.gradio['save_template'] = gr.Button('💾', elem_classes='refresh-button',visible=False)
+                        shared.gradio['delete_template'] = gr.Button('🗑️ ', elem_classes='refresh-button',visible=False)
 
-                shared.gradio['name1_instruct'] = gr.Textbox(value='', lines=2, label='User string')
-                shared.gradio['name2_instruct'] = gr.Textbox(value='', lines=1, label='Bot string')
-                shared.gradio['context_instruct'] = gr.Textbox(value='', lines=4, label='Context')
-                shared.gradio['turn_template'] = gr.Textbox(value=shared.settings['turn_template'], lines=1, label='Turn template', info='Used to precisely define the placement of spaces and new line characters in instruction prompts.')
+                shared.gradio['name1_instruct'] = gr.Textbox(visible=False,value='', lines=2, label='User string')
+                shared.gradio['name2_instruct'] = gr.Textbox(visible=False,value='', lines=1, label='Bot string')
+                shared.gradio['context_instruct'] = gr.Textbox(visible=False,value='', lines=4, label='Context')
+                shared.gradio['turn_template'] = gr.Textbox(visible=False,value=shared.settings['turn_template'], lines=1, label='Turn template', info='Used to precisely define the placement of spaces and new line characters in instruction prompts.')
                 with gr.Row():
-                    shared.gradio['chat-instruct_command'] = gr.Textbox(value=shared.settings['chat-instruct_command'], lines=4, label='Command for chat-instruct mode', info='<|character|> gets replaced by the bot name, and <|prompt|> gets replaced by the regular chat prompt.')
+                    shared.gradio['chat-instruct_command'] = gr.Textbox(visible=False,value=shared.settings['chat-instruct_command'], lines=4, label='Command for chat-instruct mode', info='<|character|> gets replaced by the bot name, and <|prompt|> gets replaced by the regular chat prompt.')
 
                 with gr.Row():
                     with gr.Tab('Chat history'):
