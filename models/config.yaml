@@ -124,7 +124,7 @@ llama-65b-gptq-3bit:
   mode: 'instruct'
   instruction_template: 'Galactica'
 .*guanaco:
-  mode: 'instruct'
+  mode: 'chat'
   instruction_template: 'Guanaco non-chat'
 .*baize:
   mode: 'instruct'
@@ -195,5 +195,11 @@ llama-65b-gptq-3bit:
   mode: 'instruct'
   instruction_template: 'Alpaca'
 .*(G|g)uanaco-.*(7|13|33|65)(b|B):
-  mode: 'instruct'
+  mode: 'chat'
   instruction_template: 'Guanaco'
+.*airoboros:
+  mode: 'instruct'
+  instruction_template: 'Vicuna-v1.1'
+.*wizardcoder:
+  mode: 'chat'
+  instruction_template: 'Alpaca'
