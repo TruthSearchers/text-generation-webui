@@ -131,7 +131,7 @@ parser.add_argument('--settings', type=str, help='Load the default interface set
 parser.add_argument('--extensions', type=str, nargs="+", help='The list of extensions to load. If you want to load more than one extension, write the names separated by spaces.')
 parser.add_argument('--verbose', action='store_true', help='Print the prompts to the terminal.')
 # Model loader
-parser.add_argument('--loader', type=str, help='Choose the model loader manually, otherwise, it will get autodetected. Valid options: transformers, autogptq, gptq-for-llama, exllama, llamacpp, rwkv, flexgen')
+parser.add_argument('--loader', type=str, help='Choose the model loader manually, otherwise, it will get autodetected. Valid options: transformers, autogptq, gptq-for-llama, exllama, exllama_hf, llamacpp, rwkv, flexgen')
 # Accelerate/transformers
 parser.add_argument('--cpu', action='store_true', help='Use the CPU to generate text. Warning: Training on CPU is extremely slow.')
 parser.add_argument('--auto-devices', action='store_true', help='Automatically split the model across the available GPU(s) and CPU.')
@@ -247,6 +247,8 @@ def fix_loader_name(name):
         return 'GPTQ-for-LLaMa'
     elif name in ['exllama', 'ex-llama', 'ex_llama', 'exlama']:
         return 'ExLlama'
+    elif name in ['exllama-hf', 'exllama_hf', 'exllama hf', 'ex-llama-hf', 'ex_llama_hf']:
+        return 'ExLlama_HF'
 
 
 if args.loader is not None:
