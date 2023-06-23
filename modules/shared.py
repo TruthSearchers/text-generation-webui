@@ -76,7 +76,8 @@ settings = {
       "code_syntax_highlight",
       "telegram_bot",
       "ui_tweaks",
-      "discord_bot"
+      "discord_bot",
+      "Playground"  
   
     ],
     "chat_default_extensions": [
@@ -88,7 +89,8 @@ settings = {
         "code_syntax_highlight",
         "telegram_bot",
         "ui_tweaks",
-        "discord_bot"
+        "discord_bot",
+        "Playground"
     ],
     'presets': {
         'default': 'Default',
