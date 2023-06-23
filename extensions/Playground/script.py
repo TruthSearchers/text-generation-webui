@@ -564,8 +564,8 @@ def ui():
                 with gr.Tab('HTML'):
                     with gr.Row():
                         htmlB = gr.HTML()
-                with gr.Tab('LoRA-Rama',visible=False):
-                    with gr.Column():
+                
+                    with gr.Column(visible=False):
                         with gr.Row():
                             loramenu = gr.Dropdown(multiselect=False, choices=get_available_loras(), value=shared.lora_names, label='LoRA and checkpoints', elem_classes='slim-dropdown')
                             create_refresh_button(loramenu, lambda: None, lambda: {'choices': get_available_loras(), 'value': shared.lora_names}, 'refresh-button')
@@ -623,7 +623,7 @@ def ui():
                             max_words = gr.Number(label='Limit previous context to last Number of words (0 is no limit, 500 is about half page)', value=params['max_words'])                            
                         with gr.Row():
                             gr_Loralmenu = gr.Radio(visible=False,choices=get_available_LORA(), value=model_name, label='Activate Loaded LORA adapters', interactive=True)
-                            create_refresh_button(gr_Loralmenu, lambda: None, lambda: {'choices': get_available_LORA(),'value': getattr(shared.model, 'active_adapter', None)}, 'refresh-button')      
+                            #create_refresh_button(gr_Loralmenu, lambda: None, lambda: {'choices': get_available_LORA(),'value': getattr(shared.model, 'active_adapter', None)}, 'refresh-button')      
                         # with gr.Row():                            
                         #     gr.Markdown('v 6.20 by FPHam https://github.com/FartyPants/Playground')    
 
