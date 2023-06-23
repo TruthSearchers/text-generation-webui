@@ -36,7 +36,7 @@ paraph_redo = ''
 paraph_redoSEL = [0,0]
 
 params = {
-        "display_name": "Playground",
+        "display_name": "🎪 Recreation Hub",
         "is_tab": True,
         "usePR": False,
         "pUSER": 'USER:',
@@ -564,17 +564,17 @@ def ui():
                 with gr.Tab('HTML'):
                     with gr.Row():
                         htmlB = gr.HTML()
-                with gr.Tab('LoRA-Rama'):
-                    with gr.Column():
-                        with gr.Row():
-                            loramenu = gr.Dropdown(multiselect=False, choices=get_available_loras(), value=shared.lora_names, label='LoRA and checkpoints', elem_classes='slim-dropdown')
-                            create_refresh_button(loramenu, lambda: None, lambda: {'choices': get_available_loras(), 'value': shared.lora_names}, 'refresh-button')
-                        with gr.Row():                            
-                            lorasub = gr.Radio(choices='', value=shared.lora_names, label='Checkpoints')
+                # with gr.Tab('LoRA-Rama'):
+                #     with gr.Column():
+                #         with gr.Row():
+                #             loramenu = gr.Dropdown(multiselect=False, choices=get_available_loras(), value=shared.lora_names, label='LoRA and checkpoints', elem_classes='slim-dropdown')
+                #             create_refresh_button(loramenu, lambda: None, lambda: {'choices': get_available_loras(), 'value': shared.lora_names}, 'refresh-button')
+                #         with gr.Row():                            
+                #             lorasub = gr.Radio(choices='', value=shared.lora_names, label='Checkpoints')
                             
-                        with gr.Row():
-                            displaytext = gr.Markdown(value='')
-                            lora_apply = gr.Button(value='Apply', elem_classes='small-button')
+                #         with gr.Row():
+                #             displaytext = gr.Markdown(value='')
+                #             lora_apply = gr.Button(value='Apply', elem_classes='small-button')
                 with gr.Tab('Perma-Memory'):
                     with gr.Column():
                         text_MEMA = gr.Textbox(value=params['memoryA'], lines=5, label='Memory A')
@@ -600,12 +600,12 @@ def ui():
                         with gr.Row():
                             para_templates_drop  = gr.Dropdown(choices=get_available_templates(), label='Paraphrase Instruction', elem_id='character-menu', info='Template to invoke paraphrtasing.', value=params['paraph_templ_sel'])
                             create_refresh_button(para_templates_drop, lambda: None, lambda: {'choices': get_available_templates()}, 'refresh-button')
-                        with gr.Accordion(label = "Edit Template", open=True):
+                        with gr.Accordion(label = "Edit Template", open=False):
                             para_template_text = gr.Textbox(value=paraphrase_text, lines=10, label='Template', interactive=True)
                         with gr.Row():
-                            gr_temperament = gr.Radio(choices=temeraments, value=params['paraph_temperament'], label='Temperament', interactive=True)    
+                            gr_temperament = gr.Radio(choices=temeraments, value=params['paraph_temperament'], label='Choose', interactive=True)    
                         with gr.Row():
-                            paraphrase_btn = gr.Button('Rewrite [SEL]', variant='primary',elem_classes="small-button")
+                            paraphrase_btn = gr.Button('Paraphrase it', variant='primary',elem_classes="small-button")
                             paraphrase_btn2 = gr.Button('Try Again', elem_classes="small-button")
                             paraphrase_btn_undo = gr.Button('Undo',elem_classes="small-button")
                             paraphrase_btn_redo = gr.Button('Redo',elem_classes="small-button")
@@ -620,12 +620,12 @@ def ui():
                         gr_summarymenu = gr.Radio(choices=['None','Summary'], value='None', label='Insert Summary', interactive=True)
                         gr_memorymenu = gr.Radio(choices=['None','Memory A','Memory B','Memory C'], value='None', label='Insert Perma-Memory', interactive=True)
                         with gr.Row():
-                            max_words = gr.Number(label='Limit previous context to last # of words (0 is no limit, 500 is about half page)', value=params['max_words'])                            
-                        with gr.Row():
-                            gr_Loralmenu = gr.Radio(choices=get_available_LORA(), value=model_name, label='Activate Loaded LORA adapters', interactive=True)
-                            create_refresh_button(gr_Loralmenu, lambda: None, lambda: {'choices': get_available_LORA(),'value': getattr(shared.model, 'active_adapter', None)}, 'refresh-button')      
-                        with gr.Row():                            
-                            gr.Markdown('v 6.20 by FPHam https://github.com/FartyPants/Playground')    
+                            max_words = gr.Number(label='Limit previous context to last Number of words (0 is no limit, 500 is about half page)', value=params['max_words'])                            
+                        # with gr.Row():
+                        #     gr_Loralmenu = gr.Radio(choices=get_available_LORA(), value=model_name, label='Activate Loaded LORA adapters', interactive=True)
+                        #     create_refresh_button(gr_Loralmenu, lambda: None, lambda: {'choices': get_available_LORA(),'value': getattr(shared.model, 'active_adapter', None)}, 'refresh-button')      
+                        # # with gr.Row():                            
+                        # #     gr.Markdown('v 6.20 by FPHam https://github.com/FartyPants/Playground')    
 
 
     selectStateA = gr.State('selectA')
