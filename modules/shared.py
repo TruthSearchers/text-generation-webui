@@ -93,7 +93,7 @@ settings = {
         "Playground"
     ],
     'presets': {
-        'default': 'Default',
+        'default': 'Midnight-Engima',
         '.*(alpaca|llama|llava|vicuna)': "LLaMA-Precise",
         '.*pygmalion': 'NovelAI-Storywriter',
         '.*RWKV.*\.pth': 'Naive',
