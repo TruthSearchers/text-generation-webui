@@ -23,7 +23,6 @@ def run(user_input, history):
         'regenerate': False,
         '_continue': False,
         'stop_at_newline': False,
-        'chat_prompt_size': 2048,
         'chat_generation_attempts': 1,
         'chat-instruct_command': 'Continue the chat dialogue below. Write a single reply for the character "<|character|>".\n\n<|prompt|>',
 
@@ -49,6 +48,7 @@ def run(user_input, history):
         'mirostat_mode': 0,
         'mirostat_tau': 5,
         'mirostat_eta': 0.1,
+
         'seed': -1,
         'add_bos_token': True,
         'truncation_length': 2048,
