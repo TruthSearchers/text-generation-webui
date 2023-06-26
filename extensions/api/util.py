@@ -4,7 +4,7 @@ from threading import Thread
 from typing import Callable, Optional
 
 from modules import shared
-from modules.chat import load_character
+from modules.chat import load_character_memoized
 from modules.presets import load_preset_memoized
 
 
@@ -40,22 +40,19 @@ def build_parameters(body, chat=False):
         'custom_stopping_strings': '',  # leave this blank
         'stopping_strings': body.get('stopping_strings', []),
     }
-    
+
     preset_name = body.get('preset', 'None')
     if preset_name not in ['None', None, '']:
-        
         preset = load_preset_memoized(preset_name)
-        
         generate_params.update(preset)
 
     if chat:
         character = body.get('character')
         instruction_template = body.get('instruction_template')
         name1, name2, _, greeting, context, _ = load_character_memoized(character, str(body.get('your_name', shared.settings['name1'])), shared.settings['name2'], instruct=False)
-        name1_instruct, name2_instruct, _, _, context_instruct, turn_template = load_character(instruction_template, '', '', instruct=True)
+        name1_instruct, name2_instruct, _, _, context_instruct, turn_template = load_character_memoized(instruction_template, '', '', instruct=True)
         generate_params.update({
             'stop_at_newline': bool(body.get('stop_at_newline', shared.settings['stop_at_newline'])),
-            'chat_prompt_size': int(body.get('chat_prompt_size', shared.settings['chat_prompt_size'])),
             'chat_generation_attempts': int(body.get('chat_generation_attempts', shared.settings['chat_generation_attempts'])),
             'mode': str(body.get('mode', 'chat')),
             'name1': name1,
