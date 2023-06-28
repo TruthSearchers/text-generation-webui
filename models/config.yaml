@@ -37,27 +37,27 @@ llama-65b-gptq-3bit:
 .*(gr1024|1024g|groupsize1024):
   groupsize: 1024
 .*(oasst|openassistant-|stablelm-7b-sft-v7-epoch-3):
-  mode: 'instruct'
+  mode: 'chat'
   instruction_template: 'Open Assistant'
   skip_special_tokens: false
 (?!.*galactica)(?!.*reward).*openassistant:
-  mode: 'instruct'
+  mode: 'chat'
   instruction_template: 'Open Assistant'
   skip_special_tokens: false
 (?!.*v0)(?!.*1.1)(?!.*1_1)(?!.*stable)(?!.*chinese).*vicuna:
-  mode: 'instruct'
+  mode: 'chat'
   instruction_template: 'Vicuna-v0'
 .*vicuna.*v0:
-  mode: 'instruct'
+  mode: 'chat'
   instruction_template: 'Vicuna-v0'
 .*vicuna.*(1.1|1_1|1.3|1_3):
-  mode: 'instruct'
+  mode: 'chat'
   instruction_template: 'Vicuna-v1.1'
 .*wizard.*vicuna:
-  mode: 'instruct'
+  mode: 'chat'
   instruction_template: 'Vicuna-v1.1'
 .*stable.*vicuna:
-  mode: 'instruct'
+  mode: 'chat'
   instruction_template: 'StableVicuna'
 (?!.*chat).*chinese-vicuna:
   mode: 'instruct'
@@ -90,7 +90,7 @@ llama-65b-gptq-3bit:
   mode: 'instruct'
   instruction_template: 'Metharme'
 .*llava:
-  mode: 'instruct'
+  mode: 'chat'
   model_type: 'llama'
   instruction_template: 'LLaVA'
   custom_stopping_strings: '"\n###"'
@@ -120,7 +120,7 @@ llama-65b-gptq-3bit:
   mode: 'instruct'
   instruction_template: 'Galactica'
 .*guanaco:
-  mode: 'instruct'
+  mode: 'chat'
   instruction_template: 'Guanaco non-chat'
 .*baize:
   mode: 'instruct'
@@ -181,7 +181,7 @@ llama-65b-gptq-3bit:
   mode: 'instruct'
   instruction_template: 'Alpaca'
 .*airoboros:
-  mode: 'instruct'
+  mode: 'chat'
   instruction_template: 'Vicuna-v1.1'
 .*WizardLM-30B-V1.0:
   mode: 'instruct'
@@ -202,7 +202,7 @@ TheBloke_WizardLM-30B-GPTQ:
   mode: 'instruct'
   instruction_template: 'Alpaca'
 .*guanaco-.*(7|13|33|65)b:
-  mode: 'instruct'
+  mode: 'chat'
   instruction_template: 'Guanaco'
 .*hypermantis:
   mode: 'instruct'
@@ -236,3 +236,7 @@ TheBloke_WizardLM-30B-GPTQ:
 .*orca_mini:
   mode: 'instruct'
   instruction_template: 'Orca Mini'
+.*landmark:
+  truncation_length: 8192
+.*superhot-8k:
+  truncation_length: 8192
