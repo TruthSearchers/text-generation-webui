@@ -12,7 +12,7 @@ from PIL import Image
 
 import modules.shared as shared
 from modules.models import reload_model, unload_model
-
+from modules.ui import create_refresh_button
 torch._C._jit_set_profiling_mode(False)
 
 # parameters which can be customized in settings.json of webui
@@ -35,8 +35,9 @@ params = {
     'sampler_name': 'DDIM',
     'steps': 32,
     'cfg_scale': 7,
-    'sd_checkpoint' : ' ',
-    'checkpoint_list' : [" "]
+    'textgen_prefix': 'Please provide a detailed and vivid description of [subject]',
+    'sd_checkpoint': ' ',
+    'checkpoint_list': [" "]
 }
 
 
@@ -75,7 +76,7 @@ def give_VRAM_priority(actor):
 if params['manage_VRAM']:
     give_VRAM_priority('set')
 
-samplers = ['DDIM', 'DPM++ 2M Karras']  # TODO: get the availible samplers with http://{address}}/sdapi/v1/samplers
+
 SD_models = ['NeverEndingDream']  # TODO: get with http://{address}}/sdapi/v1/sd-models and allow user to select
 
 picture_response = False  # specifies if the next model response should appear as a picture
@@ -118,10 +119,9 @@ def input_modifier(string):
         string = string.lower()
         if "of" in string:
             subject = string.split('of', 1)[1]  # subdivide the string once by the first 'of' instance and get what's coming after it
-            string = "Please provide a detailed and vivid description of " + subject
+            string = params['textgen_prefix'].replace("[subject]", subject)
         else:
-            string = "Please provide a detailed description of your appearance, your surroundings and what you are doing right now"
-
+            string = params['textgen_prefix'].replace("[subject]", "your appearance, your surroundings and what you are doing right now")
     return string
 
 # Get and save the Stable Diffusion-generated picture
@@ -288,7 +288,15 @@ def load_checkpoint(checkpoint):
     }
 
     requests.post(url=f'{params["address"]}/sdapi/v1/options', json=payload)
+def get_samplers():
+    try:
+        response = requests.get(url=f'{params["address"]}/sdapi/v1/samplers')
+        response.raise_for_status()
+        samplers = [x["name"] for x in response.json()]
+    except:
+        samplers = []
 
+    return samplers
 def ui():
 
     # Gradio elements
@@ -310,14 +318,17 @@ def ui():
 
         with gr.Accordion("Generation parameters", open=False):
             prompt_prefix = gr.Textbox(placeholder=params['prompt_prefix'], value=params['prompt_prefix'], label='Prompt Prefix (best used to describe the look of the character)')
+            textgen_prefix = gr.Textbox(placeholder=params['textgen_prefix'], value=params['textgen_prefix'], label='textgen prefix (type [subject] where the subject should be placed)')
             negative_prompt = gr.Textbox(placeholder=params['negative_prompt'], value=params['negative_prompt'], label='Negative Prompt')
             with gr.Row():
                 with gr.Column():
                     width = gr.Slider(256, 768, value=params['width'], step=64, label='Width')
                     height = gr.Slider(256, 768, value=params['height'], step=64, label='Height')
-                with gr.Column():
-                    sampler_name = gr.Textbox(placeholder=params['sampler_name'], value=params['sampler_name'], label='Sampling method', elem_id="sampler_box")
-                    steps = gr.Slider(1, 150, value=params['steps'], step=1, label="Sampling steps")
+                with gr.Column(variant="compact", elem_id="sampler_col"):
+                    with gr.Row(elem_id="sampler_row"):
+                        sampler_name = gr.Dropdown(value=params['sampler_name'], label='Sampling method', elem_id="sampler_box")
+                        create_refresh_button(sampler_name, lambda: None, lambda: {'choices': get_samplers()}, 'refresh-button')
+                    steps = gr.Slider(1, 150, value=params['steps'], step=1, label="Sampling steps", elem_id="steps_box")
             with gr.Row():
                 seed = gr.Number(label="Seed", value=params['seed'], elem_id="seed_box")
                 cfg_scale = gr.Number(label="CFG Scale", value=params['cfg_scale'], elem_id="cfg_box")
@@ -339,6 +350,7 @@ def ui():
 
     address.submit(fn=SD_api_address_update, inputs=address, outputs=address)
     prompt_prefix.change(lambda x: params.update({"prompt_prefix": x}), prompt_prefix, None)
+    textgen_prefix.change(lambda x: params.update({"textgen_prefix": x}), textgen_prefix, None)
     negative_prompt.change(lambda x: params.update({"negative_prompt": x}), negative_prompt, None)
     width.change(lambda x: params.update({"width": x}), width, None)
     height.change(lambda x: params.update({"height": x}), height, None)
