@@ -287,7 +287,10 @@ def load_checkpoint(checkpoint):
         "sd_model_checkpoint": checkpoint
     }
 
-    requests.post(url=f'{params["address"]}/sdapi/v1/options', json=payload)
+    try:
+        requests.post(url=f'{params["address"]}/sdapi/v1/options', json=payload)
+    except:
+        pass
 def get_samplers():
     try:
         response = requests.get(url=f'{params["address"]}/sdapi/v1/samplers')
