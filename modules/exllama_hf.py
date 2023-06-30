@@ -55,6 +55,7 @@ class ExllamaHF(PreTrainedModel):
         if cache is None:
             cache = ExLlamaCache(self.ex_model)
             self.ex_model.forward(torch.tensor([seq[:-1]], dtype=torch.long), cache, preprocess_only=True, lora=self.lora)
+
         logits = self.ex_model.forward(torch.tensor([seq[-1:]], dtype=torch.long), cache, lora=self.lora).to(kwargs['input_ids'].device)
 
         loss = None
@@ -96,6 +97,11 @@ class ExllamaHF(PreTrainedModel):
         if shared.args.gpu_split:
             config.set_auto_map(shared.args.gpu_split)
             config.gpu_peer_fix = True
+        if torch.version.hip:
+            config.rmsnorm_no_half2 = True
+            config.rope_no_half2 = True
+            config.matmul_no_half2 = True
+            config.silu_no_half2 = True
 
         # This slowes down a bit but align better with autogptq generation.
         # TODO: Should give user choice to tune the exllama config
