@@ -723,9 +723,9 @@ def create_interface():
             with gr.Tab("⚙️ Settings Station", elem_id="parameters"):
                 create_settings_menus(default_preset)
 
-        # Model tab
-        with gr.Tab("🧠 Model", elem_id="model-tab"):
-            create_model_menus()
+        # # Model tab
+        # with gr.Tab("🧠 Model", elem_id="model-tab"):
+        #     create_model_menus()
 
         # Training tab
         #with gr.Tab("Training", elem_id="training-tab"):
