@@ -554,7 +554,11 @@ def create_interface():
                       shared.gradio['Clear history'] = gr.Button('Clear History 🗑️')
                       shared.gradio['Clear history-confirm'] = gr.Button('Confirm ✅', variant='stop', visible=False)
                       shared.gradio['Clear history-cancel'] = gr.Button('Cancel ❌', visible=False)
+                  with gr.Row():
+                      shared.gradio['toggle_dark_mode'] = gr.Button('Dark/Light ☾ mode', elem_classes="small-button")
+                      shared.gradio['toggle_dark_mode'].click(lambda: None, None, None, _js='() => {document.getElementsByTagName("body")[0].classList.toggle("dark")}')
 
+                
 
                 with gr.Row():
                     def uncensored(choice):
@@ -637,9 +641,7 @@ def create_interface():
             with gr.Tab("⚙️ Settings Station", elem_id="parameters"):
                 
                 create_settings_menus(default_preset)
-                shared.gradio['toggle_dark_mode'] = gr.Button('Dark/Light ☾ mode', elem_classes="small-button")
-                shared.gradio['toggle_dark_mode'].click(lambda: None, None, None, _js='() => {document.getElementsByTagName("body")[0].classList.toggle("dark")}')
-
+                
 
         # Create notebook mode interface
         elif shared.args.notebook:
