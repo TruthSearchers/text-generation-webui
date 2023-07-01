@@ -555,7 +555,7 @@ def create_interface():
                       shared.gradio['Clear history-confirm'] = gr.Button('Confirm ✅', variant='stop', visible=False)
                       shared.gradio['Clear history-cancel'] = gr.Button('Cancel ❌', visible=False)
                   with gr.Row():
-                      shared.gradio['toggle_dark_mode'] = gr.Button('Dark/Light ☾ mode', elem_classes="small-button")
+                      shared.gradio['toggle_dark_mode'] = gr.Button('Dark/Light ☾ mode')
                       shared.gradio['toggle_dark_mode'].click(lambda: None, None, None, _js='() => {document.getElementsByTagName("body")[0].classList.toggle("dark")}')
 
                 
@@ -575,6 +575,9 @@ def create_interface():
                 with gr.Row():
                     shared.gradio['mode'] = gr.Radio(choices=['chat'], value=shared.settings['mode'] if shared.settings['mode'] in ['chat', 'instruct', 'chat-instruct'] else 'chat', label='Mode')
                     shared.gradio['chat_style'] = gr.Dropdown(choices=utils.get_available_chat_styles(), label='Chat style', value=shared.settings['chat_style'], visible=shared.settings['mode'] != 'instruct')
+                with gr.Box():    
+                    with gr.Accordion(label='⚙️ Settings',open=False):
+                        create_settings_menus(default_preset)
             with gr.Tab('🎭 Create-a-Character', elem_id='chat-settings'):
                 with gr.Tab("Character"):
                     with gr.Row():
@@ -638,9 +641,12 @@ def create_interface():
                                 shared.gradio['tavern_desc'] = gr.Textbox(value='', lines=4, max_lines=4, label='Description', interactive=False)
 
                         shared.gradio['Submit tavern character'] = gr.Button(value='Submit', interactive=False)
-            with gr.Tab("⚙️ Settings Station", elem_id="parameters"):
+                with gr.Box():    
+                    with gr.Accordion(label='🧠 Model',open=False):
+                        create_model_menus()   
+            # with gr.Tab("⚙️ Settings Station", elem_id="parameters"):
                 
-                create_settings_menus(default_preset)
+            #     create_settings_menus(default_preset)
                 
 
         # Create notebook mode interface
