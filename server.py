@@ -527,27 +527,34 @@ def create_interface():
 
             with gr.Tab('💬 Chat Room', elem_id='main'):
                 shared.gradio['display'] = gr.HTML(value=chat_html_wrapper(shared.history['visible'], shared.settings['name1'], shared.settings['name2'], 'chat', 'cai-chat'))
-                shared.gradio['textbox'] = gr.Textbox(label='Message')
-                with gr.Row():
-                    shared.gradio['Stop'] = gr.Button('Stop 🛑', elem_id='stop')
-                    shared.gradio['Generate'] = gr.Button('Send 🚀', elem_id='Generate', variant='primary')
-                    shared.gradio['Continue'] = gr.Button('Continue ▶️')
+                with gr.Box():
+                  with gr.Row():
+                    shared.gradio['textbox'] = gr.Textbox(placeholder='Message',show_label=False)
+                    with gr.Box():
+                      with gr.Row():
+                        shared.gradio['Generate'] = gr.Button('🚀', elem_id='Generate', variant='primary')
+                        shared.gradio['Stop'] = gr.Button('🛑', elem_id='stop')
+                                
+                        shared.gradio['Continue'] = gr.Button('▶️')
+                        shared.gradio['Regenerate'] = gr.Button('🔄')
+                            
+                with gr.Accordion(label = "More Buttons", open=False):
+                  with gr.Row():
+                      shared.gradio['Impersonate'] = gr.Button('Impersonate 👤')
 
-                with gr.Row():
-                    shared.gradio['Impersonate'] = gr.Button('Impersonate 👤')
-                    shared.gradio['Regenerate'] = gr.Button('🔄 Regenerate')
-                    #shared.gradio['Replace last reply'] = gr.Button('Replace last reply')
+                      #shared.gradio['Replace last reply'] = gr.Button('Replace last reply')
 
-                with gr.Row():
-                    shared.gradio['Copy last reply'] = gr.Button('Copy reply 📋')
-                    #shared.gradio['Send dummy message'] = gr.Button('Send dummy message')
-                    #shared.gradio['Send dummy reply'] = gr.Button('Send dummy reply')
+                  with gr.Row():
+                      shared.gradio['Copy last reply'] = gr.Button('Copy reply 📋')
+                      #shared.gradio['Send dummy message'] = gr.Button('Send dummy message')
+                      #shared.gradio['Send dummy reply'] = gr.Button('Send dummy reply')
 
-                with gr.Row():
-                    #shared.gradio['Remove last'] = gr.Button('Remove last')
-                    shared.gradio['Clear history'] = gr.Button('Clear History 🗑️')
-                    shared.gradio['Clear history-confirm'] = gr.Button('Confirm ✅', variant='stop', visible=False)
-                    shared.gradio['Clear history-cancel'] = gr.Button('Cancel ❌', visible=False)
+                  with gr.Row():
+                      #shared.gradio['Remove last'] = gr.Button('Remove last')
+                      shared.gradio['Clear history'] = gr.Button('Clear History 🗑️')
+                      shared.gradio['Clear history-confirm'] = gr.Button('Confirm ✅', variant='stop', visible=False)
+                      shared.gradio['Clear history-cancel'] = gr.Button('Cancel ❌', visible=False)
+
 
                 with gr.Row():
                     def uncensored(choice):
