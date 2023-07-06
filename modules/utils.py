@@ -78,7 +78,7 @@ def get_available_models():
 
 
 def get_available_presets():
-    return sorted(set((k.stem for k in Path('presets').glob('*.yaml'))), key=natural_keys)
+    return sorted(set((k.stem for k in Path('presets').glob('*.txt'))), key=natural_keys)
 
 
 def get_available_prompts():
