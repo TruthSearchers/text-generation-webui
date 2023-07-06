@@ -958,68 +958,80 @@ def create_interface():
                 partial(chat.redraw_html, reset_cache=True), shared.reload_inputs, gradio('display'))
 
         # notebook/default modes event handlers
+        # notebook/default modes event handlers
         else:
-            shared.input_params = [shared.gradio[k] for k in ['textbox', 'interface_state']]
+            shared.input_params = gradio('textbox', 'interface_state')
             if shared.args.notebook:
-                output_params = [shared.gradio[k] for k in ['textbox', 'html']]
+                output_params = gradio('textbox', 'html')
             else:
-                output_params = [shared.gradio[k] for k in ['output_textbox', 'html']]
+                output_params = gradio('output_textbox', 'html')
 
             gen_events.append(shared.gradio['Generate'].click(
-                lambda x: x, shared.gradio['textbox'], shared.gradio['last_input']).then(
-                ui.gather_interface_values, [shared.gradio[k] for k in shared.input_elements], shared.gradio['interface_state']).then(
+                lambda x: x, gradio('textbox'), gradio('last_input')).then(
+                ui.gather_interface_values, gradio(shared.input_elements), gradio('interface_state')).then(
                 generate_reply_wrapper, shared.input_params, output_params, show_progress=False).then(
+                ui.gather_interface_values, gradio(shared.input_elements), gradio('interface_state')).then(
                 lambda: None, None, None, _js=f"() => {{{audio_notification_js}}}")
                 # lambda: None, None, None, _js="() => {element = document.getElementsByTagName('textarea')[0]; element.scrollTop = element.scrollHeight}")
             )
 
             gen_events.append(shared.gradio['textbox'].submit(
-                lambda x: x, shared.gradio['textbox'], shared.gradio['last_input']).then(
-                ui.gather_interface_values, [shared.gradio[k] for k in shared.input_elements], shared.gradio['interface_state']).then(
+                lambda x: x, gradio('textbox'), gradio('last_input')).then(
+                ui.gather_interface_values, gradio(shared.input_elements), gradio('interface_state')).then(
                 generate_reply_wrapper, shared.input_params, output_params, show_progress=False).then(
+                ui.gather_interface_values, gradio(shared.input_elements), gradio('interface_state')).then(
                 lambda: None, None, None, _js=f"() => {{{audio_notification_js}}}")
                 # lambda: None, None, None, _js="() => {element = document.getElementsByTagName('textarea')[0]; element.scrollTop = element.scrollHeight}")
             )
 
             if shared.args.notebook:
-                shared.gradio['Undo'].click(lambda x: x, shared.gradio['last_input'], shared.gradio['textbox'], show_progress=False)
-                shared.gradio['markdown_render'].click(lambda x: x, shared.gradio['textbox'], shared.gradio['markdown'], queue=False)
+                shared.gradio['Undo'].click(lambda x: x, gradio('last_input'), gradio('textbox'), show_progress=False)
+                shared.gradio['markdown_render'].click(lambda x: x, gradio('textbox'), gradio('markdown'), queue=False)
                 gen_events.append(shared.gradio['Regenerate'].click(
-                    lambda x: x, shared.gradio['last_input'], shared.gradio['textbox'], show_progress=False).then(
-                    ui.gather_interface_values, [shared.gradio[k] for k in shared.input_elements], shared.gradio['interface_state']).then(
+                    lambda x: x, gradio('last_input'), gradio('textbox'), show_progress=False).then(
+                    ui.gather_interface_values, gradio(shared.input_elements), gradio('interface_state')).then(
                     generate_reply_wrapper, shared.input_params, output_params, show_progress=False).then(
+                    ui.gather_interface_values, gradio(shared.input_elements), gradio('interface_state')).then(
                     lambda: None, None, None, _js=f"() => {{{audio_notification_js}}}")
                     # lambda: None, None, None, _js="() => {element = document.getElementsByTagName('textarea')[0]; element.scrollTop = element.scrollHeight}")
                 )
             else:
-                shared.gradio['markdown_render'].click(lambda x: x, shared.gradio['output_textbox'], shared.gradio['markdown'], queue=False)
+                shared.gradio['markdown_render'].click(lambda x: x, gradio('output_textbox'), gradio('markdown'), queue=False)
                 gen_events.append(shared.gradio['Continue'].click(
-                    ui.gather_interface_values, [shared.gradio[k] for k in shared.input_elements], shared.gradio['interface_state']).then(
+                    ui.gather_interface_values, gradio(shared.input_elements), gradio('interface_state')).then(
                     generate_reply_wrapper, [shared.gradio['output_textbox']] + shared.input_params[1:], output_params, show_progress=False).then(
+                    ui.gather_interface_values, gradio(shared.input_elements), gradio('interface_state')).then(
                     lambda: None, None, None, _js=f"() => {{{audio_notification_js}}}")
                     # lambda: None, None, None, _js="() => {element = document.getElementsByTagName('textarea')[1]; element.scrollTop = element.scrollHeight}")
                 )
 
             shared.gradio['Stop'].click(stop_everything_event, None, None, queue=False, cancels=gen_events if shared.args.no_stream else None)
-            shared.gradio['prompt_menu'].change(load_prompt, shared.gradio['prompt_menu'], shared.gradio['textbox'], show_progress=False)
+            shared.gradio['prompt_menu'].change(load_prompt, gradio('prompt_menu'), gradio('textbox'), show_progress=False)
             shared.gradio['save_prompt'].click(
-                lambda x: x, shared.gradio['textbox'], shared.gradio['save_contents']).then(
-                lambda: 'prompts/', None, shared.gradio['save_root']).then(
-                lambda: utils.current_time() + '.txt', None, shared.gradio['save_filename']).then(
-                lambda: gr.update(visible=True), None, shared.gradio['file_saver'])
+                lambda x: x, gradio('textbox'), gradio('save_contents')).then(
+                lambda: 'prompts/', None, gradio('save_root')).then(
+                lambda: utils.current_time() + '.txt', None, gradio('save_filename')).then(
+                lambda: gr.update(visible=True), None, gradio('file_saver'))
 
             shared.gradio['delete_prompt'].click(
-                lambda: 'prompts/', None, shared.gradio['delete_root']).then(
-                lambda x: x + '.txt', shared.gradio['prompt_menu'], shared.gradio['delete_filename']).then(
-                lambda: gr.update(visible=True), None, shared.gradio['file_deleter'])
+                lambda: 'prompts/', None, gradio('delete_root')).then(
+                lambda x: x + '.txt', gradio('prompt_menu'), gradio('delete_filename')).then(
+                lambda: gr.update(visible=True), None, gradio('file_deleter'))
 
-            shared.gradio['count_tokens'].click(count_tokens, shared.gradio['textbox'], shared.gradio['status'], show_progress=False)
+            shared.gradio['count_tokens'].click(count_tokens, gradio('textbox'), gradio('status'), show_progress=False)
 
         create_file_saving_event_handlers()
-        shared.gradio['interface'].load(lambda: None, None, None, _js=f"() => {{{js}}}")
+
+        shared.gradio['interface'].load(
+            lambda: None, None, None, _js=f"() => {{{js}}}").then(
+            partial(ui.apply_interface_values, {}, use_persistent=True), None, gradio(ui.list_interface_input_elements()), show_progress=False)
+
         if shared.settings['dark_theme']:
             shared.gradio['interface'].load(lambda: None, None, None, _js="() => document.getElementsByTagName('body')[0].classList.add('dark')")
-        shared.gradio['interface'].load(partial(ui.apply_interface_values, {}, use_persistent=True), None, [shared.gradio[k] for k in ui.list_interface_input_elements(chat=shared.is_chat())], show_progress=False)
+
+        if shared.is_chat():
+            shared.gradio['interface'].load(chat.redraw_html, shared.reload_inputs, gradio('display'))
+
         # Extensions tabs
         extensions_module.create_extensions_tabs()
 
@@ -1113,16 +1125,20 @@ if __name__ == "__main__":
             add_lora_to_model(shared.args.lora)
 
     # Force a character to be loaded
+    # Forcing some events to be triggered on page load
+    shared.persistent_interface_state.update({
+        'loader': shared.args.loader or 'Transformers',
+    })
+
     if shared.is_chat():
         shared.persistent_interface_state.update({
             'mode': shared.settings['mode'],
             'character_menu': shared.args.character or shared.settings['character'],
             'instruction_template': shared.settings['instruction_template']
         })
-    shared.persistent_interface_state.update({
-        'loader': shared.args.loader or 'Transformers',
-    })
-    
+        if Path("cache/pfp_character.png").exists():
+                Path("cache/pfp_character.png").unlink()
+        
     shared.generation_lock = Lock()
     # Launch the web UI
     create_interface()
