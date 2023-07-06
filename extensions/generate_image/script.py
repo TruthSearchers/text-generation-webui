@@ -10,9 +10,10 @@ import requests
 import torch
 from PIL import Image
 
-import modules.shared as shared
+from modules import shared
 from modules.models import reload_model, unload_model
 from modules.ui import create_refresh_button
+
 torch._C._jit_set_profiling_mode(False)
 
 # parameters which can be customized in settings.json of webui
@@ -76,7 +77,6 @@ def give_VRAM_priority(actor):
 if params['manage_VRAM']:
     give_VRAM_priority('set')
 
-
 SD_models = ['NeverEndingDream']  # TODO: get with http://{address}}/sdapi/v1/sd-models and allow user to select
 
 picture_response = False  # specifies if the next model response should appear as a picture
@@ -122,10 +122,12 @@ def input_modifier(string):
             string = params['textgen_prefix'].replace("[subject]", subject)
         else:
             string = params['textgen_prefix'].replace("[subject]", "your appearance, your surroundings and what you are doing right now")
+
     return string
 
 # Get and save the Stable Diffusion-generated picture
-def get_SD_pictures(description):
+def get_SD_pictures(description, character):
+
     global params
 
     if params['manage_VRAM']:
@@ -158,14 +160,14 @@ def get_SD_pictures(description):
         if params['save_img']:
             img_data = base64.b64decode(img_str)
 
-            variadic = f'{date.today().strftime("%Y_%m_%d")}/{shared.character}_{int(time.time())}'
-            output_file = Path(f'extensions/generate_image/outputs/{variadic}.png')
+            variadic = f'{date.today().strftime("%Y_%m_%d")}/{character}_{int(time.time())}'
+            output_file = Path(f'extensions/sd_api_pictures/outputs/{variadic}.png')
             output_file.parent.mkdir(parents=True, exist_ok=True)
 
             with open(output_file.as_posix(), 'wb') as f:
                 f.write(img_data)
 
-            visible_result = visible_result + f'<img src="/file/extensions/generate_image/outputs/{variadic}.png" alt="{description}" style="max-width: unset; max-height: unset;">\n'
+            visible_result = visible_result + f'<img src="/file/extensions/sd_api_pictures/outputs/{variadic}.png" alt="{description}" style="max-width: unset; max-height: unset;">\n'
         else:
             image = Image.open(io.BytesIO(base64.b64decode(img_str.split(",", 1)[0])))
             # lower the resolution of received images for the chat, otherwise the log size gets out of control quickly with all the base64 values in visible history
@@ -184,7 +186,7 @@ def get_SD_pictures(description):
 
 # TODO: how do I make the UI history ignore the resulting pictures (I don't want HTML to appear in history)
 # and replace it with 'text' for the purposes of logging?
-def output_modifier(string):
+def output_modifier(string, state):
     """
     This function is applied to the model outputs.
     """
@@ -211,7 +213,7 @@ def output_modifier(string):
     else:
         text = string
 
-    string = get_SD_pictures(string) + "\n" + text
+    string = get_SD_pictures(string, state['character_menu']) + "\n" + text
 
     return string
 
@@ -247,7 +249,6 @@ def filter_address(address):
 
 
 def SD_api_address_update(address):
-
     global params
 
     msg = "✔️ SD API is found on:"
@@ -266,6 +267,8 @@ def SD_api_address_update(address):
 def custom_css():
     path_to_css = Path(__file__).parent.resolve() / 'style.css'
     return open(path_to_css, 'r').read()
+
+
 def get_checkpoints():
     global params
 
@@ -281,8 +284,8 @@ def get_checkpoints():
 
     return gr.update(choices=params['checkpoint_list'], value=params['sd_checkpoint'])
 
-def load_checkpoint(checkpoint):
 
+def load_checkpoint(checkpoint):
     payload = {
         "sd_model_checkpoint": checkpoint
     }
@@ -291,6 +294,8 @@ def load_checkpoint(checkpoint):
         requests.post(url=f'{params["address"]}/sdapi/v1/options', json=payload)
     except:
         pass
+
+
 def get_samplers():
     try:
         response = requests.get(url=f'{params["address"]}/sdapi/v1/samplers')
@@ -300,6 +305,8 @@ def get_samplers():
         samplers = []
 
     return samplers
+
+
 def ui():
 
     # Gradio elements
@@ -307,10 +314,10 @@ def ui():
     with gr.Accordion("Parameters", open=True, elem_classes="SDAP"):
         with gr.Row():
             address = gr.Textbox(placeholder=params['address'], value=params['address'], label='Auto1111\'s WebUI address')
-            modes_list = ["Only Image", "Image with Prompt", "Image with Text (Picturebook/Adventure Style)"]
+            modes_list = ["Manual", "Immersive/Interactive", "Picturebook/Adventure"]
             mode = gr.Dropdown(modes_list, value=modes_list[params['mode']], label="Mode of operation", type="index")
             with gr.Column(scale=1, min_width=300):
-                #manage_VRAM = gr.Checkbox(value=params['manage_VRAM'], label='Manage VRAM')
+                manage_VRAM = gr.Checkbox(value=params['manage_VRAM'], label='Manage VRAM')
                 save_img = gr.Checkbox(value=params['save_img'], label='Keep original images and use them in chat')
 
             force_pic = gr.Button("Force the picture response")
@@ -347,8 +354,8 @@ def ui():
     address.change(lambda x: params.update({"address": filter_address(x)}), address, None)
     mode.select(lambda x: params.update({"mode": x}), mode, None)
     mode.select(lambda x: toggle_generation(x > 1), inputs=mode, outputs=None)
-    #manage_VRAM.change(lambda x: params.update({"manage_VRAM": x}), manage_VRAM, None)
-    #manage_VRAM.change(lambda x: give_VRAM_priority('set' if x else 'reset'), inputs=manage_VRAM, outputs=None)
+    manage_VRAM.change(lambda x: params.update({"manage_VRAM": x}), manage_VRAM, None)
+    manage_VRAM.change(lambda x: give_VRAM_priority('set' if x else 'reset'), inputs=manage_VRAM, outputs=None)
     save_img.change(lambda x: params.update({"save_img": x}), save_img, None)
 
     address.submit(fn=SD_api_address_update, inputs=address, outputs=address)
@@ -366,6 +373,7 @@ def ui():
     update_checkpoints.click(get_checkpoints, None, checkpoint)
     checkpoint.change(lambda x: params.update({"sd_checkpoint": x}), checkpoint, None)
     checkpoint.change(load_checkpoint, checkpoint, None)
+
     sampler_name.change(lambda x: params.update({"sampler_name": x}), sampler_name, None)
     steps.change(lambda x: params.update({"steps": x}), steps, None)
     seed.change(lambda x: params.update({"seed": x}), seed, None)
