@@ -28,13 +28,13 @@ def load_preset(name):
         'mirostat_tau': 5.0,
         'mirostat_eta': 0.1,
     }
-
-    with open(Path(f'presets/{name}.txt'), 'r') as infile:
-        preset = infile.read()
-    for i in preset.splitlines():
-        i = i.rstrip(',').strip().split('=')
-        if len(i) == 2 and i[0].strip() != 'tokens':
-            generate_params[i[0].strip()] = eval(i[1].strip())
+    if name not in ['None', None, '']:
+        with open(Path(f'presets/{name}.txt'), 'r') as infile:
+            preset = infile.read()
+        for i in preset.splitlines():
+            i = i.rstrip(',').strip().split('=')
+            if len(i) == 2 and i[0].strip() != 'tokens':
+                generate_params[i[0].strip()] = eval(i[1].strip())
 
     generate_params['temperature'] = min(1.99, generate_params['temperature'])
     return generate_params
