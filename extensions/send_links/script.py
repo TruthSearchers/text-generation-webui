@@ -96,6 +96,8 @@ def apply_settings(chunk_count, chunk_count_initial, time_weight):
 def custom_generate_chat_prompt(user_input, state, **kwargs):
     global chat_collector
 
+    history = state['history']
+
     if state['mode'] == 'instruct':
         results = collector.get_sorted(user_input, n_results=params['chunk_count'])
         additional_context = '\nYour reply should be based on the context below:\n\n' + '\n'.join(results)
@@ -104,29 +106,29 @@ def custom_generate_chat_prompt(user_input, state, **kwargs):
 
         def make_single_exchange(id_):
             output = ''
-            output += f"{state['name1']}: {shared.history['internal'][id_][0]}\n"
-            output += f"{state['name2']}: {shared.history['internal'][id_][1]}\n"
+            output += f"{state['name1']}: {history['internal'][id_][0]}\n"
+            output += f"{state['name2']}: {history['internal'][id_][1]}\n"
             return output
 
-        if len(shared.history['internal']) > params['chunk_count'] and user_input != '':
+        if len(history['internal']) > params['chunk_count'] and user_input != '':
             chunks = []
-            hist_size = len(shared.history['internal'])
+            hist_size = len(history['internal'])
             for i in range(hist_size-1):
                 chunks.append(make_single_exchange(i))
 
             add_chunks_to_collector(chunks, chat_collector)
-            query = '\n'.join(shared.history['internal'][-1] + [user_input])
+            query = '\n'.join(history['internal'][-1] + [user_input])
             try:
                 best_ids = chat_collector.get_ids_sorted(query, n_results=params['chunk_count'], n_initial=params['chunk_count_initial'], time_weight=params['time_weight'])
                 additional_context = '\n'
                 for id_ in best_ids:
-                    if shared.history['internal'][id_][0] != '<|BEGIN-VISIBLE-CHAT|>':
+                    if history['internal'][id_][0] != '<|BEGIN-VISIBLE-CHAT|>':
                         additional_context += make_single_exchange(id_)
 
                 logger.warning(f'Adding the following new context:\n{additional_context}')
                 state['context'] = state['context'].strip() + '\n' + additional_context
                 kwargs['history'] = {
-                    'internal': [shared.history['internal'][i] for i in range(hist_size) if i not in best_ids],
+                    'internal': [history['internal'][i] for i in range(hist_size) if i not in best_ids],
                     'visible': ''
                 }
             except RuntimeError:
@@ -160,7 +162,67 @@ def input_modifier(string):
 
 
 def ui():
-    
+    with gr.Accordion("Click for more information...", open=False):
+        gr.Markdown(textwrap.dedent("""
+
+        ## About
+
+        This extension takes a dataset as input, breaks it into chunks, and adds the result to a local/offline Chroma database.
+
+        The database is then queried during inference time to get the excerpts that are closest to your input. The idea is to create an arbitrarily large pseudo context.
+
+        The core methodology was developed and contributed by kaiokendev, who is working on improvements to the method in this repository: https://github.com/kaiokendev/superbig
+
+        ## Data input
+
+        Start by entering some data in the interface below and then clicking on "Load data".
+
+        Each time you load some new data, the old chunks are discarded.
+
+        ## Chat mode
+
+        #### Instruct
+
+        On each turn, the chunks will be compared to your current input and the most relevant matches will be appended to the input in the following format:
+
+        ```
+        Consider the excerpts below as additional context:
+        ...
+        ```
+
+        The injection doesn't make it into the chat history. It is only used in the current generation.
+
+        #### Regular chat
+
+        The chunks from the external data sources are ignored, and the chroma database is built based on the chat history instead. The most relevant past exchanges relative to the present input are added to the context string. This way, the extension acts as a long term memory.
+
+        ## Notebook/default modes
+
+        Your question must be manually specified between `<|begin-user-input|>` and `<|end-user-input|>` tags, and the injection point must be specified with `<|injection-point|>`.
+
+        The special tokens mentioned above (`<|begin-user-input|>`, `<|end-user-input|>`, and `<|injection-point|>`) are removed in the background before the text generation begins.
+
+        Here is an example in Vicuna 1.1 format:
+
+        ```
+        A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.
+
+        USER:
+
+        <|begin-user-input|>
+        What datasets are mentioned in the text below?
+        <|end-user-input|>
+
+        <|injection-point|>
+
+        ASSISTANT:
+        ```
+
+        ⚠️  For best results, make sure to remove the spaces and new line characters after `ASSISTANT:`.
+
+        *This extension is currently experimental and under development.*
+
+        """))
 
     with gr.Row():
         with gr.Column(min_width=600):
